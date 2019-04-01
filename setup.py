@@ -37,7 +37,7 @@ class RunCoverage(RunTests):
             raise SystemExit(1)
 
 
-NAME = 'nc'
+NAME = 'hardback'
 OWNER = 'timedata-org'
 
 VERSION_FILE = os.path.join(os.path.dirname(__file__), NAME, 'VERSION')
@@ -58,8 +58,6 @@ CMDCLASS = {
 CLASSIFIERS = [
     'Development Status :: 5 - Production/Stable',
     'License :: OSI Approved :: MIT License',
-    'Programming Language :: Python :: 3.4',
-    'Programming Language :: Python :: 3.5',
     'Programming Language :: Python :: 3.6',
     'Programming Language :: Python :: 3.7',
 ]
@@ -83,7 +81,7 @@ if sversion < SETUPTOOLS_VERSION:
 setuptools.setup(
     name=NAME,
     version=VERSION,
-    description='Named colors in Python',
+    description='Hardcopy backups of digital data',
     long_description=open('README.rst').read(),
     author='Tom Ritchford',
     author_email='tom@swirly.com',
