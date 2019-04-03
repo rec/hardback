@@ -7,11 +7,17 @@ import datetime, os
 from . import hasher
 
 
-def header(filename):
+def header(filename, **kwds):
     stat = os.stat(filename)
     return {
         'filename': os.path.basename(filename),
-        'timestamp': datetime.datetime.utcfromtimestamp(stat.st_mtime),
-        'size': stat.size,
-        'hash': hasher.hash_file(filename),
+        'timestamp': str(datetime.datetime.utcfromtimestamp(stat.st_mtime)),
+        'size': stat.st_size,
+        'sha256': hasher.hash_file(filename).hexdigest(),
     }
+
+
+if __name__ == '__main__':
+    import json, sys
+
+    print(*(json.dumps(header(i)) for i in sys.argv[1:]), end='\n')

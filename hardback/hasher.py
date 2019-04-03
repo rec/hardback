@@ -13,15 +13,15 @@ def block_iterator(filename, block_size=BLOCK_SIZE):
                 return
 
 
-def hash_digest(items):
+def hash_digest(items, hasher=HASHER):
     h = HASHER()
     for i in items:
         h.update(i)
     return h
 
 
-def hash_file(filename, block_size=BLOCK_SIZE):
-    return hash_digest(block_iterator(filename, block_size))
+def hash_file(filename, block_size=BLOCK_SIZE, hasher=HASHER):
+    return hash_digest(block_iterator(filename, block_size), hasher)
 
 
 if __name__ == '__main__':
