@@ -17,9 +17,15 @@ def hash_digest(items):
     h = HASHER()
     for i in items:
         h.update(i)
-    return h.hexdigest()
+    return h
 
 
 def hash_file(filename, block_size=BLOCK_SIZE):
-    it = block_iterator(filename, block_size)
-    return hash_digest(it)
+    return hash_digest(block_iterator(filename, block_size))
+
+
+if __name__ == '__main__':
+    import sys
+
+    for arg in sys.argv[1:]:
+        print(hash_file(arg).hexdigest())
