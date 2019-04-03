@@ -3,13 +3,16 @@ import segno
 VERSION = 36
 ERROR_CORRECTION = 'H'
 SUFFIX = '.png'
-BLOCK_SIZE = 1024
+CHUNK_SIZE = 1051
 
 
 def write(data, filename):
+    if len(data) > CHUNK_SIZE:
+        raise ValueError('data is too big')
+
     if not filename.endswith(SUFFIX):
         filename += SUFFIX
-    if len(data) > BLOCK_SIZE:
-        raise ValueError('data is too big')
+
     qr = segno.make_qr(data, version=VERSION, error='H')
     qr.save(filename)
+    return filename

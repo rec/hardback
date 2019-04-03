@@ -3,7 +3,7 @@ HASHER = hashlib.sha256
 BLOCK_SIZE = 4096
 
 
-def block_iterator(filename, block_size=BLOCK_SIZE):
+def file_blocks(filename, block_size=BLOCK_SIZE):
     with open(filename, 'rb') as fp:
         while True:
             buf = fp.read(block_size)
@@ -21,7 +21,7 @@ def hash_digest(items, hasher=HASHER):
 
 
 def hash_file(filename, block_size=BLOCK_SIZE, hasher=HASHER):
-    return hash_digest(block_iterator(filename, block_size), hasher)
+    return hash_digest(file_blocks(filename, block_size), hasher)
 
 
 if __name__ == '__main__':

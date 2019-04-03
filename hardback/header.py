@@ -7,7 +7,7 @@ import datetime, os
 from . import hasher
 
 
-def header(filename, **kwds):
+def header(filename):
     stat = os.stat(filename)
     return {
         'filename': os.path.basename(filename),

@@ -58,32 +58,69 @@ I'm going to use that to hold 1024 bytes of target data with a sequence number
 and a hash of the original document, totalling 1,048 bytes.  (The extra 3 bytes
 aren't entirely wasted - we get a tiny bit better error correction.)
 
-The layout in bytes within the QR data is like this:
 
-| data [1024] | hash [16] | sequence number [8] |
+Data layout
+=============================
 
-There's no checksum or error correction for the data itself, as the QR code is
+The binary data is divided into 1K *chunks*. A chunk is written to a QR code
+as part of a *block*, which also contains a sequence number and a hash of the
+original documet.
+
+The layout in bytes within the block  is like this:
+
+| sequence [8] | hash [16] | chunk [up to 1024] |
+
+There's no checksum or error correction for this block itself, as the QR code is
 already taking care of that for us.
 
-The hash is the first 16 bytes of the 32-byte SHA256 hash of the entire
-document.
+``hash`` is the first 16 bytes of the 32-byte SHA256 hash of the entire
+document.  ``data`` is one kilobyte from your target file.
 
-The sequence number is a _signed_ (i.e. positive, negative or zero) 8-byte
-integer.
+``sequence`` is an 8-byte signed integer - a number that can be positive,
+negative or zero, and that fits into 8 bytes (or equivalently 16 hex digits).
 
-If the sequence number is positive, then this QR code contains a data
-block, and the sequence number says how many blocks it is from the start.
-Eight bytes allows us to generate 2 to the power of 63 blocks of 1K each,
-or about 9 zetabytes (which is 9,000,000,000,000 gigabytes) - roughly the
-entire size of all the world's data in 2019.
+Within a block, ``sequence`` is is represented in big-endian (or intuitive or
+network order) https://en.wikipedia.org/wiki/Endianness - which means the *most*
+significant digits occur first.  (Intel processors are little-ended, where the
+*least* significant digits come first, so we have to be careful to avoid this
+mistake in coding...)
 
-If the sequence number is zero or negative, then it is a metadata block.
+If the sequence is zero or negative, then it is a metadata block.
 
-The block with sequence number zero always contains a JSON description of the
+The block with sequence zero always contains a JSON description of the
 original file with the fields ``filename``, ``timestamp``, ``size`` and
 ``sha256``.  If the original filename is too long (which would be about 900
 characters or so!), it is truncated from the left.
 
-Blocks with negative sequence numbers are currently unspecified and reserved
+Blocks with negative sequences are currently unspecified and reserved
 for future expansion or individuals to use.  The first version of the software
-will only produce output with non-negative sequence numbers.
+will only produce output with non-negative sequences.
+ If ``sequence`` is positive, it's the sequence number of a data block.  This means
+that the first data block has ``sequence`` 1.
+
+Eight bytes allows us to generate 2 to the power of 63 blocks of 1K each, or
+about 9 zetabytes (which is 9,000,000,000,000 gigabytes) - roughly the entire
+size of all the world's data in 2019.
+
+
+
+Remembering that one byte is equal to two hex digits, if the hash of your
+full document is
+``56484fd9aad8e87540609ca6c938f98fab60296b3bec808ea8b3e24da2035ce9``
+then your sequence of QR codes would look like:
+
+0000000000000000 56484fd9aad8e87540609ca6c938f98f {"filename": "me.jpg", ...
+0000000000000001 56484fd9aad8e87540609ca6c938f98f ... binary data ...
+0000000000000002 56484fd9aad8e87540609ca6c938f98f ... more data ...
+
+This means that each QR code identifies itself as to what part of the whole
+document it is.
+
+It also means that the metadata block is key to understanding how the whole
+system works!  If you have a metadata block, then you can reconstruct at least
+part of the data even if a lot of it is lost.  Otherwise, you really have to
+guess.
+
+Somewhere here I need to point out that "raw" formats like RAW and AIFF are
+much preferable for this sort of archival activity because compressed formats
+dramatically magnify the effect of any errors or gaps.
