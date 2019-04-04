@@ -3,3 +3,5 @@ cfgs
 import_all
 segno
 progress
+pyyaml
+attrs
