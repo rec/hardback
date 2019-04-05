@@ -79,12 +79,6 @@ document.  ``data`` is one kilobyte from your target file.
 ``sequence`` is an 8-byte signed integer - a number that can be positive,
 negative or zero, and that fits into 8 bytes (or equivalently 16 hex digits).
 
-Within a block, ``sequence`` is is represented in big-endian (or intuitive or
-network order) https://en.wikipedia.org/wiki/Endianness - which means the *most*
-significant digits occur first.  (Intel processors are little-ended, where the
-*least* significant digits come first, so we have to be careful to avoid this
-mistake in coding...)
-
 If the sequence is zero or negative, then it is a metadata block.
 
 The block with sequence zero always contains a JSON description of the
@@ -95,23 +89,34 @@ characters or so!), it is truncated from the left.
 Blocks with negative sequences are currently unspecified and reserved
 for future expansion or individuals to use.  The first version of the software
 will only produce output with non-negative sequences.
- If ``sequence`` is positive, it's the sequence number of a data block.  This means
-that the first data block has ``sequence`` 1.
+
+If ``sequence`` is positive, it's the sequence number of a data block.  This
+means that the first data block has ``sequence`` 1.
 
 Eight bytes allows us to generate 2 to the power of 63 blocks of 1K each, or
 about 9 zetabytes (which is 9,000,000,000,000 gigabytes) - roughly the entire
 size of all the world's data in 2019.
 
+Within a block, ``sequence`` is is represented in `big-endian
+<https://en.wikipedia.org/wiki/Endianness>`_ (or intuitive or network order) -
+which means the *most* significant digits occur first.
 
+Intel processors are little-ended, where the *least* significant digits come
+first, so we use the `struct library
+<https://docs.python.org/3/library/struct.html#byte-order-size-and-alignment>`_
+to make sure that the output is system-independent.
 
-Remembering that one byte is equal to two hex digits, if the hash of your
+Remembering that one byte is equal to two hex digits, if the hash of a
 full document is
 ``56484fd9aad8e87540609ca6c938f98fab60296b3bec808ea8b3e24da2035ce9``
-then your sequence of QR codes would look like:
+then the resulting sequence of QR codes would look like:
 
-0000000000000000 56484fd9aad8e87540609ca6c938f98f {"filename": "me.jpg", ...
-0000000000000001 56484fd9aad8e87540609ca6c938f98f ... binary data ...
-0000000000000002 56484fd9aad8e87540609ca6c938f98f ... more data ...
+.. code-block:: text
+
+    0000000000000000 56484fd9aad8e87540609ca6c938f98f {"filename": "me.jpg", ...
+    0000000000000001 56484fd9aad8e87540609ca6c938f98f ... 1024 bytes ...
+    0000000000000002 56484fd9aad8e87540609ca6c938f98f ... more data  ...
+    ... etc
 
 This means that each QR code identifies itself as to what part of the whole
 document it is.
@@ -121,6 +126,13 @@ system works!  If you have a metadata block, then you can reconstruct at least
 part of the data even if a lot of it is lost.  Otherwise, you really have to
 guess.
 
-Somewhere here I need to point out that "raw" formats like RAW and AIFF are
-much preferable for this sort of archival activity because compressed formats
-dramatically magnify the effect of any errors or gaps.
+So we're going to have to intersperse the metadata block within all the other
+blocks periodically if we really want something that can be partially
+reconstructed!
+
+Also, "raw" formats like RAW and AIFF are much preferable for this sort of
+archival activity because compressed formats dramatically magnify the effect of
+any errors or gaps.  If you had a book containing the digital data for an AIFF
+or RAW, you could still reconstruct pieces of it even if you only have a
+limited number of pages, whereas you might get nothing at all if you were using
+mp3 or jpg files.
