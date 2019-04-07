@@ -1,12 +1,11 @@
 from pathlib import Path
-import os
 from ebooklib import epub
 from . import book
 
 CSS_DIR = Path(__file__).parents[1] / 'css'
 
 
-def create_book(desc):
+def write_epub(desc):
     book = epub.EpubBook()
     book.set_identifier(desc.identifier)
     book.set_title(desc.title)
@@ -23,7 +22,8 @@ def create_book(desc):
     default_css = _style('default')
     book.add_item(default_css)
 
-    c1 = epub.EpubHtml(title='Introduction', file_name='intro.xhtml', lang='hr')
+    c1 = epub.EpubHtml(
+        title='Introduction', file_name='intro.xhtml', lang='hr')
     c1.content = CONTENT1
 
     # about chapter
@@ -86,8 +86,12 @@ rendition:layout-pre-paginated\
  rendition:spread-none'
 
 
-if __name__ == '__main__':
-    create_book(book.Book(
+def test_write():
+    write_epub(book.Book(
         identifier='Identifier',
         title='Title',
         authors=('Tom Ritchford',)))
+
+
+if __name__ == '__main__':
+    test_write()
