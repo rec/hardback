@@ -63,6 +63,7 @@ def write_qr_codes(filename, outfile):
         bar.next_item(qr.write(chunk, filename).name)
 
     bar.finish()
+    return file_format, sequence_number + 1
 
 
 if __name__ == '__main__':
