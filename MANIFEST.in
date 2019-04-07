@@ -1,6 +1,7 @@
 include nc/VERSION
 include requirements.txt
 include README.rst
+include css/*
 recursive-exclude test *
 recursive-exclude bin *
 recursive-exclude build *

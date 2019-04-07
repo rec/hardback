@@ -1,3 +1,4 @@
+import typing
 from attr import dataclass
 
 
@@ -24,11 +25,6 @@ class DublinCore:
 class Book:
     identifier: str = ''
     title: str = ''
+    cover_image: str = ''
     language: str = 'en'
-
-
-@dataclass
-class Layout:
-    identifier: str = ''
-    title: str = ''
-    language: str = 'en'
+    authors: typing.Tuple[str] = ()

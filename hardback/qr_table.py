@@ -21,3 +21,7 @@ def table(entries, columns, rows):
 
 def qr_table(files, columns, rows):
     return table((f'<img src="{f}"/>' for f in files), columns, rows)
+
+
+def qr_files(file_pattern, columns, rows, repeat_every=0):
+    pass
