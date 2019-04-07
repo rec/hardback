@@ -22,9 +22,19 @@ class DublinCore:
 
 
 @dataclass
+class Chapter:
+    title: str = ''
+    filename: str = ''
+    content: str = ''
+    properties: str = ''
+
+
+@dataclass
 class Book:
     identifier: str = ''
     title: str = ''
     cover_image: str = ''
     language: str = 'en'
     authors: typing.Tuple[str] = ()
+    outfile: str = 'test.epub'
+    chapters: typing.Tuple[Chapter] = ()
