@@ -1,4 +1,4 @@
-import datetime, itertools, json, math, struct
+import datetime, itertools, json, math, os, struct
 from . import hasher, header, qr
 from progress.bar import ChargingBar
 
@@ -39,7 +39,17 @@ def write_qr_codes(filename, outfile):
     bar = ElapsedBar('Writing files', max=file_blocks)
 
     blocks_digits = math.ceil(math.log(file_blocks, 16))
-    file_format = f'{outfile}-%0{blocks_digits}x'
+
+    if outfile.endswith('/'):
+        os.makedirs(outfile, exist_ok=True)
+        sep = ''
+    elif os.path.isdir(outfile):
+        sep = '/'
+    else:
+        os.makedirs(os.path.dirname(outfile), exist_ok=True)
+        sep = '-'
+
+    file_format = f'{outfile}{sep}%0{blocks_digits}x'
 
     parent = bytes.fromhex(metadata['sha256'])[:PARENT_SIZE]
     metadata_blocks = (json.dumps(metadata).encode(),)
