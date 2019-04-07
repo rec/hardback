@@ -33,22 +33,24 @@ class ElapsedBar(ChargingBar):
 
 def write_qr_codes(filename, outfile):
     metadata = header.header(filename)
+
+    file_blocks, rem = divmod(metadata['size'], BLOCK_SIZE)
+    file_blocks += 1 + bool(rem)
+    bar = ElapsedBar('Writing files', max=file_blocks)
+
+    blocks_digits = math.ceil(math.log(file_blocks, 16))
+    file_format = f'{outfile}-%0{blocks_digits}x'
+
     parent = bytes.fromhex(metadata['sha256'])[:PARENT_SIZE]
     metadata_blocks = (json.dumps(metadata).encode(),)
     file_blocks = hasher.file_blocks(filename, BLOCK_SIZE)
     blocks = itertools.chain(metadata_blocks, file_blocks)
-    file_blocks, rem = divmod(metadata['size'], BLOCK_SIZE)
-    file_blocks += 1 + bool(rem)
-    blocks_digits = math.ceil(math.log(file_blocks, 16))
-    file_format = f'{outfile}-%0{blocks_digits}x'
-
-    bar = ElapsedBar('Writing files', max=file_blocks)
 
     for sequence_number, block in enumerate(blocks):
         chunk = struct.pack(f'>q', sequence_number) + parent + block
         assert len(chunk) <= CHUNK_SIZE
         filename = file_format % sequence_number
-        bar.next_item(qr.write(chunk, filename))
+        bar.next_item(qr.write(chunk, filename).name)
 
     bar.finish()
 

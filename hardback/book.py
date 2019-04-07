@@ -25,3 +25,10 @@ class Book:
     identifier: str = ''
     title: str = ''
     language: str = 'en'
+
+
+@dataclass
+class Layout:
+    identifier: str = ''
+    title: str = ''
+    language: str = 'en'

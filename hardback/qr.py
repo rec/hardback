@@ -6,13 +6,15 @@ SUFFIX = '.png'
 CHUNK_SIZE = 1051
 
 
-def write(data, filename):
+def write(data, out):
     if len(data) > CHUNK_SIZE:
         raise ValueError('data is too big')
 
-    if not filename.endswith(SUFFIX):
-        filename += SUFFIX
+    if isinstance(out, str):
+        if not out.endswith(SUFFIX):
+            out += SUFFIX
+        out = open(out, 'wb')
 
     qr = segno.make_qr(data, version=VERSION, error='H')
-    qr.save(filename)
-    return filename
+    qr.save(out)
+    return out
