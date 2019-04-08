@@ -5,6 +5,15 @@ from . import book
 CSS_DIR = Path(__file__).parents[1] / 'css'
 
 
+def create_epub(desc, chapters):
+    book = EpubBook()
+    book.add_desc(desc)
+
+    chapters = [epub.EpubHtml(**c.__dict__) for c in chapters]
+    book.add_chapters(chapters)
+    return book
+
+
 class EpubBook(epub.EpubBook):
     def add_desc(self, desc):
         self.set_identifier(desc.identifier)
@@ -33,13 +42,9 @@ class EpubBook(epub.EpubBook):
         epub.write_epub(outfile, self, options)
 
 
-def write_epub(desc, chapters, outfile):
-    book = EpubBook()
-    book.add_desc(desc)
-
-    chapters = [epub.EpubHtml(**c.__dict__) for c in chapters]
-    book.add_chapters(chapters)
-    book.write(outfile)
+def write_epub(desc, chapters, outfile, **options):
+    book = create_epub(desc, chapters)
+    book.write(outfile, **options)
 
 
 def make_css(name):
@@ -64,21 +69,16 @@ def test_write():
     write_epub(data, chapters, 'test.epub')
 
 
-def add_items(book, *items):
-    for i in items:
-        book.add_items(i)
-
-
 INTRODUCTION = """
 <html><head></head>
 <body><h1>Introduction</h1>
-<p>Introduction paragraph where i explain what is happening.
+<p>Introductary paragraph where I explain what is happening.
 </p></body></html>
 """
 
 ABOUT_THIS_BOOK = """
 <h1>About this book</h1>
-<p>Helou, this is my book! There are many books, but this one is mine.</p>
+<p>Hello, this is my book.</p>
 """
 
 PROPERTIES = '\

@@ -31,7 +31,7 @@ class ElapsedBar(ChargingBar):
         self.next()
 
 
-def write_qr_codes(filename, outfile):
+def write_qr_code_chunks(filename, outfile, callback=None):
     metadata = header.header(filename)
 
     file_blocks, rem = divmod(metadata['size'], BLOCK_SIZE)
@@ -60,13 +60,15 @@ def write_qr_codes(filename, outfile):
         chunk = struct.pack(f'>q', sequence_number) + parent + block
         assert len(chunk) <= CHUNK_SIZE
         filename = file_format % sequence_number
-        bar.next_item(qr.write(chunk, filename).name)
+        result_file = qr.write(chunk, filename)
+        callback and callback(result_file)
+        bar.next_item(result_file.name)
 
     bar.finish()
-    return file_format, sequence_number + 1
+    return file_format, sequence_number + 1, metadata
 
 
 if __name__ == '__main__':
     import sys
-    for i, f in enumerate(write_qr_codes(*sys.argv[1:])):
+    for i in write_qr_code_chunks(*sys.argv[1:]):
         pass
