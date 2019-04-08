@@ -5,52 +5,68 @@ from . import book
 CSS_DIR = Path(__file__).parents[1] / 'css'
 
 
-def write_epub(desc):
-    book = epub.EpubBook()
-    book.set_identifier(desc.identifier)
-    book.set_title(desc.title)
-    book.set_language(desc.language)
+class EpubBook(epub.EpubBook):
+    def add_desc(self, desc):
+        self.set_identifier(desc.identifier)
+        self.set_title(desc.title)
+        self.set_language(desc.language)
 
-    for a in desc.authors:
-        book.add_author(a)
+        for a in desc.authors:
+            self.add_author(a)
 
-    if desc.cover_image:
-        with open(desc.cover_image, 'rb') as fp:
-            filename = Path(desc.cover_image).name
-            book.set_cover(filename, fp.read())
+        if desc.cover_image:
+            with open(desc.cover_image, 'rb') as fp:
+                filename = 'cover_' + Path(desc.cover_image).name
+                self.set_cover(filename, fp.read())
 
-    def add_style(name):
-        style = epub.EpubItem(
-            uid=f'style_{name}',
-            file_name=f'style/{name}.css',
-            media_type='text/css',
-            content=open(CSS_DIR / f'{name}.css').read())
-        book.add_item(style)
+    def add_chapters(self, chapters):
+        self.add_items(*chapters)
+        self.toc = chapters
+        self.add_items(epub.EpubNcx(), epub.EpubNav(), make_css('nav'))
+        self.spine = ['nav'] + chapters
 
-    add_style('default')
+    def add_items(self, *items):
+        for i in items:
+            self.add_item(i)
 
-    chapters = []
-    for c in desc.chapters:
-        chapter = epub.EpubHtml(title=c.title, file_name=c.filename)
-        chapter.content = c.content
-        c.properties and chapter.properties.append(c.properties)
-        chapters.append(chapter)
-        book.add_item(chapter)
+    def write(self, outfile, **options):
+        epub.write_epub(outfile, self, options)
 
-    book.toc = chapters
 
-    # add navigation files
-    book.add_item(epub.EpubNcx())
-    book.add_item(epub.EpubNav())
+def write_epub(desc, chapters, outfile):
+    book = EpubBook()
+    book.add_desc(desc)
 
-    # add css file
-    add_style('nav')
+    chapters = [epub.EpubHtml(**c.__dict__) for c in chapters]
+    book.add_chapters(chapters)
+    book.write(outfile)
 
-    # create spine
-    book.spine = ['nav'] + chapters
 
-    # create epub file
-    epub.write_epub(desc.outfile, book, {})
+def make_css(name):
+    return epub.EpubItem(
+        uid=f'style_{name}',
+        file_name=f'style/{name}.css',
+        media_type='text/css',
+        content=open(CSS_DIR / f'{name}.css').read())
+
+
+def test_write():
+    data = book.Book(
+        identifier='Identifier',
+        title='Title',
+        authors=('Tom Ritchford',))
+
+    chapters = (
+        book.Chapter('Introduction', 'introduction.xhtml', INTRODUCTION),
+        book.Chapter('About this book', 'about.xhtml', ABOUT_THIS_BOOK),
+    )
+
+    write_epub(data, chapters, 'test.epub')
+
+
+def add_items(book, *items):
+    for i in items:
+        book.add_items(i)
 
 
 INTRODUCTION = """
@@ -69,19 +85,6 @@ PROPERTIES = '\
 rendition:layout-pre-paginated\
  rendition:orientation-landscape\
  rendition:spread-none'
-
-
-def test_write():
-    data = book.Book(
-        identifier='Identifier',
-        title='Title',
-        authors=('Tom Ritchford',),
-        chapters=(
-            book.Chapter('Introduction', 'introduction.xhtml', INTRODUCTION),
-            book.Chapter('About this book', 'about.xhtml', ABOUT_THIS_BOOK),
-        )
-    )
-    write_epub(data)
 
 
 if __name__ == '__main__':
