@@ -37,7 +37,7 @@ class Writer:
 
 def write_qr_code_chunks(filename, outdir, callback=None):
     writer = Writer(filename)
-    bar = ElapsedBar('Writing files', writer=writer.block_count)
+    bar = ElapsedBar('Writing files', max=writer.block_count)
     for sequence_number, result_file in enumerate(writer.write(outdir)):
         callback and callback(result_file)
         bar.next_item(result_file.name)
