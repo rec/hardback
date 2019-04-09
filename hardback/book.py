@@ -35,3 +35,10 @@ class Book:
     cover_image: str = ''
     language: str = 'en'
     authors: typing.Tuple[str] = ()
+
+
+@dataclass
+class Layout:
+    columns: int = 0
+    rows: int = 0
+    cover: str = ''
