@@ -15,17 +15,17 @@ def create_epub(desc, chapters):
 
 
 class EpubBook(epub.EpubBook):
-    def add_desc(self, desc):
-        self.set_identifier(desc.identifier)
-        self.set_title(desc.title)
-        self.set_language(desc.language)
+    def add_desc(self, book):
+        self.set_identifier(book.identifier)
+        self.set_title(book.title)
+        self.set_language(book.language)
 
-        for a in desc.authors:
+        for a in book.authors:
             self.add_author(a)
 
-        if desc.cover_image:
-            with open(desc.cover_image, 'rb') as fp:
-                filename = 'cover_' + Path(desc.cover_image).name
+        if book.cover_image:
+            with open(book.cover_image, 'rb') as fp:
+                filename = 'cover_' + Path(book.cover_image).name
                 self.set_cover(filename, fp.read())
 
     def add_chapters(self, chapters):

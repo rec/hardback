@@ -22,7 +22,8 @@ class Book:
 class Hardback:
     filename: str = ''
     book: Book = Factory(Book)
-    bar: bool = True
+    enable_bar: bool = True
+    remove_image_files: bool = True
     columns: int = 7
     rows: int = 5
     metadata: dict = Factory(dict)
