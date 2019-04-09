@@ -12,6 +12,7 @@ High level picture
 ======================
 
 There are only two parts to this project:
+
 * Writing the original document or book from a digital document
 * Reading the book back in
 
@@ -35,8 +36,11 @@ I'm using a Python library called EBookLib for this - I haven't looked
 into it thoroughly yet, but it seems well-received and there is no other
 candidate in Python.
 
+Update: EBookLib is fairly gnarly, but the underlying format is just XHTML,
+so I'm having reasonable success getting output.
+
 The data format within the book is QR code
-=======================
+=============================================
 
 QR codes will be used to store the data in 1k blocks - again, QR is the only
 reasonable choice for solving the problem of printable data.
@@ -68,7 +72,9 @@ original documet.
 
 The layout in bytes within the block  is like this:
 
-| sequence [8] | hash [16] | chunk [up to 1024] |
+.. code-block:: text
+
+    | sequence [8] | hash [16] | chunk [up to 1024] |
 
 There's no checksum or error correction for this block itself, as the QR code is
 already taking care of that for us.
@@ -79,16 +85,16 @@ document.  ``data`` is one kilobyte from your target file.
 ``sequence`` is an 8-byte signed integer - a number that can be positive,
 negative or zero, and that fits into 8 bytes (or equivalently 16 hex digits).
 
-If the sequence is zero or negative, then it is a metadata block.
+If the sequence number is zero or negative, then it is a metadata block.
 
-The block with sequence zero always contains a JSON description of the
+The block with sequence number zero always contains a JSON description of the
 original file with the fields ``filename``, ``timestamp``, ``size`` and
 ``sha256``.  If the original filename is too long (which would be about 900
 characters or so!), it is truncated from the left.
 
-Blocks with negative sequences are currently unspecified and reserved
+Blocks with negative sequence numbers are currently unspecified and reserved
 for future expansion or individuals to use.  The first version of the software
-will only produce output with non-negative sequences.
+will only produce output with non-negative sequence numbers.
 
 If ``sequence`` is positive, it's the sequence number of a data block.  This
 means that the first data block has ``sequence`` 1.
@@ -129,6 +135,10 @@ guess.
 So we're going to have to intersperse the metadata block within all the other
 blocks periodically if we really want something that can be partially
 reconstructed!
+
+Update - this is done: the metadata blocks appear in varying locations on each
+page so even a hole were punched through the book, some copy of the metadata
+would probably survive.
 
 Also, "raw" formats like RAW and AIFF are much preferable for this sort of
 archival activity because compressed formats dramatically magnify the effect of
