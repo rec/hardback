@@ -1,5 +1,5 @@
-import typing
-from attr import dataclass
+from typing import Tuple
+from attr import dataclass, Factory
 
 
 @dataclass
@@ -34,11 +34,15 @@ class Book:
     title: str = ''
     cover_image: str = ''
     language: str = 'en'
-    authors: typing.Tuple[str] = ()
+    authors: Tuple[str] = ()
 
 
 @dataclass
-class Layout:
-    columns: int = 0
-    rows: int = 0
-    cover: str = ''
+class Hardback:
+    filename: str = ''
+    book: Book = Factory(Book)
+    bar: bool = True
+    columns: int = 7
+    rows: int = 5
+    metadata: dict = Factory(dict)
+    options: dict = Factory(dict)

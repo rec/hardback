@@ -1,40 +1,49 @@
-from . write_qr_code_chunks import Writer
-from . elapsed_bar import ElapsedBar
-from . create_epub import EpubBook
-# from . chunk_sequence import chunk_sequence
-from ebooklib.epub import EpubItem
-
-
-def write(filename, outdir, callback=None):
-    writer = Writer(filename)
-    bar = ElapsedBar('Writing files', max=writer.block_count)
-    for sequence_number, result_file in enumerate(writer.write(outdir)):
-        callback and callback(result_file)
-        bar.next_item(result_file.name)
-
-    bar.finish()
-    return writer.file_format, sequence_number + 1, writer.metadata
+import yaml
+from . import chunk_sequence, create_epub, elapsed_bar, qr_table, write_chunks
+from ebooklib import epub
 
 
 def run(desc):
-    book = EpubBook()
+    book = create_epub.EpubBook()
     book.add_desc(desc.book)
 
-    writer = Writer(desc.filename)
-    bar = ElapsedBar('Writing files', max=writer.block_count, enabled=desc.bar)
+    writer = write_chunks.Writer(desc.filename)
+    bar = elapsed_bar.ElapsedBar(
+        'Writing', max=writer.block_count, enabled=desc.bar)
     block_count = 0
-    for file in writer.write(desc.outdir):
-        block_count += 1
-        with open(file, 'rb') as fp:
-            book.add_item(EpubItem(file_name=file.name, content=fp.read()))
-        bar and bar.next_item(file.name)
 
-    print('block_count', block_count, 'expected', writer.block_count)
+    def items():
+        for file in writer.write(desc.outdir):
+            nonlocal block_count
+            block_count += 1
+            with open(file, 'rb') as fp:
+                item = epub.EpubItem(file_name=file.name, content=fp.read())
+                book.add_item(item)
+            desc.remove and file.unlink()
+            bar.next_item(file.name)
+            yield file
 
-    bar and bar.finish()
+    chunks = chunk_sequence(items(), desc.columns * desc.rows)
+
+    metadata = dict(writer.metadata, **desc.metadata)
+    chapter1 = epub.EpubHtml(
+        title='Metadata',
+        file_name='chapter1.xhtml',
+        content='<pre>\n%s\n</pre>' % yaml.dump(metadata))
+
+    chapter2 = epub.EpubHtml(
+        title=desc.filename,
+        file_name='chapter2.xhtml',
+        content=qr_table.qr_table(chunks, desc.columns, desc.rows))
+
+    book.add_chapters([chapter1, chapter2])
+    book.write(desc.outfile, **desc.options)
+
+    bar.finish()
 
 
 if __name__ == '__main__':
-    import sys
-    for i in write(*sys.argv[1:]):
+    # import sys
+    from . import book
+    for i in run(book.Hardback()):
         pass
