@@ -1,6 +1,6 @@
-import datetime, itertools, json, math, os, struct
+import itertools, json, math, os, struct
 from . import hasher, header, qr
-from progress.bar import ChargingBar
+from . elapsed_bar import ElapsedBar
 
 PARENT_SIZE = 16
 BLOCK_SIZE = 1024
@@ -9,36 +9,14 @@ CHUNK_SIZE = PARENT_SIZE + BLOCK_SIZE + SEQUENCE_NUMBER_SIZE
 assert CHUNK_SIZE <= qr.CHUNK_SIZE
 
 
-class ElapsedBar(ChargingBar):
-    def __init__(self, *args, **kwds):
-        super().__init__(*args, **kwds)
-        self.start_time = datetime.datetime.now()
-        self.index = 0
-
-    def next_item(self, message):
-        self.index += 1
-        elapsed = datetime.datetime.now() - self.start_time
-        time_per_item = elapsed / self.index
-        remaining_items = 1 + (self.max - self.index)
-        remaining = time_per_item * remaining_items
-
-        def fmt(t):
-            return str(t).split('.', 1)[0]
-
-        self.message = '%s %s elapsed, %s to go' % (
-            message, fmt(elapsed), fmt(remaining))
-
-        self.next()
-
-
 def write_qr_code_chunks(filename, outfile, callback=None):
     metadata = header.header(filename)
 
-    file_blocks, rem = divmod(metadata['size'], BLOCK_SIZE)
-    file_blocks += 1 + bool(rem)
-    bar = ElapsedBar('Writing files', max=file_blocks)
+    block_count, rem = divmod(metadata['size'], BLOCK_SIZE)
+    block_count += 1 + bool(rem)
+    bar = ElapsedBar('Writing files', max=block_count)
 
-    blocks_digits = math.ceil(math.log(file_blocks, 16))
+    blocks_digits = math.ceil(math.log(block_count, 16))
 
     if outfile.endswith('/'):
         os.makedirs(outfile, exist_ok=True)
