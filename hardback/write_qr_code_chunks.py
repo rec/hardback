@@ -16,23 +16,12 @@ class Writer:
 
         self.block_count, rem = divmod(self.metadata['size'], BLOCK_SIZE)
         self.block_count += 1 + bool(rem)
-        self.bar = ElapsedBar('Writing files', max=self.block_count)
 
-    def write(self, outfile, callback=None):
-        blocks_digits = math.ceil(math.log(self.block_count, 16))
+    def write(self, outdir):
+        os.makedirs(outdir, exist_ok=True)
 
-        if outfile.endswith('/'):
-            outdir = outfile
-            sep = ''
-        elif os.path.isdir(outfile):
-            outdir = ''
-            sep = '/'
-        else:
-            outdir = os.path.dirname(outfile)
-            sep = '-'
-
-        outdir and os.makedirs(outdir, exist_ok=True)
-        self.file_format = f'{outfile}{sep}%0{blocks_digits}x'
+        digits = math.ceil(math.log(self.block_count, 16))
+        self.file_format = os.path.join(outdir, f'%0{digits}x{qr.SUFFIX}')
 
         parent = bytes.fromhex(self.metadata['sha256'])[:PARENT_SIZE]
         metadata_blocks = (json.dumps(self.metadata).encode(),)
@@ -43,16 +32,18 @@ class Writer:
             chunk = struct.pack(f'>q', sequence_number) + parent + block
             assert len(chunk) <= CHUNK_SIZE
             filename = self.file_format % sequence_number
-            result_file = qr.write(chunk, filename)
-            callback and callback(result_file)
-            self.bar.next_item(result_file.name)
-
-        self.bar.finish()
-        return self.file_format, sequence_number + 1, self.metadata
+            yield qr.write(chunk, filename)
 
 
-def write_qr_code_chunks(filename, outfile, callback=None):
-    return Writer(filename).write(outfile, callback)
+def write_qr_code_chunks(filename, outdir, callback=None):
+    writer = Writer(filename)
+    bar = ElapsedBar('Writing files', writer=writer.block_count)
+    for sequence_number, result_file in enumerate(writer.write(outdir)):
+        callback and callback(result_file)
+        bar.next_item(result_file.name)
+
+    bar.finish()
+    return writer.file_format, sequence_number + 1, writer.metadata
 
 
 if __name__ == '__main__':
