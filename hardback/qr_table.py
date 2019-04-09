@@ -20,4 +20,5 @@ def table(entries, columns, rows):
 
 
 def qr_table(files, columns, rows):
-    return table((f'<img src="{f}"/>' for f in files), columns, rows)
+    t = table((f'<img src="{f}"/>' for f in files), columns, rows)
+    return '\n'.join(t)
