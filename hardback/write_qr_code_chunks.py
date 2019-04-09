@@ -9,41 +9,50 @@ CHUNK_SIZE = PARENT_SIZE + BLOCK_SIZE + SEQUENCE_NUMBER_SIZE
 assert CHUNK_SIZE <= qr.CHUNK_SIZE
 
 
+class Writer:
+    def __init__(self, filename):
+        self.filename = filename
+        self.metadata = header.header(filename)
+
+        self.block_count, rem = divmod(self.metadata['size'], BLOCK_SIZE)
+        self.block_count += 1 + bool(rem)
+        self.bar = ElapsedBar('Writing files', max=self.block_count)
+
+    def write(self, outfile, callback=None):
+        blocks_digits = math.ceil(math.log(self.block_count, 16))
+
+        if outfile.endswith('/'):
+            outdir = outfile
+            sep = ''
+        elif os.path.isdir(outfile):
+            outdir = ''
+            sep = '/'
+        else:
+            outdir = os.path.dirname(outfile)
+            sep = '-'
+
+        outdir and os.makedirs(outdir, exist_ok=True)
+        self.file_format = f'{outfile}{sep}%0{blocks_digits}x'
+
+        parent = bytes.fromhex(self.metadata['sha256'])[:PARENT_SIZE]
+        metadata_blocks = (json.dumps(self.metadata).encode(),)
+        file_blocks = hasher.file_blocks(self.filename, BLOCK_SIZE)
+        blocks = itertools.chain(metadata_blocks, file_blocks)
+
+        for sequence_number, block in enumerate(blocks):
+            chunk = struct.pack(f'>q', sequence_number) + parent + block
+            assert len(chunk) <= CHUNK_SIZE
+            filename = self.file_format % sequence_number
+            result_file = qr.write(chunk, filename)
+            callback and callback(result_file)
+            self.bar.next_item(result_file.name)
+
+        self.bar.finish()
+        return self.file_format, sequence_number + 1, self.metadata
+
+
 def write_qr_code_chunks(filename, outfile, callback=None):
-    metadata = header.header(filename)
-
-    block_count, rem = divmod(metadata['size'], BLOCK_SIZE)
-    block_count += 1 + bool(rem)
-    bar = ElapsedBar('Writing files', max=block_count)
-
-    blocks_digits = math.ceil(math.log(block_count, 16))
-
-    if outfile.endswith('/'):
-        os.makedirs(outfile, exist_ok=True)
-        sep = ''
-    elif os.path.isdir(outfile):
-        sep = '/'
-    else:
-        os.makedirs(os.path.dirname(outfile), exist_ok=True)
-        sep = '-'
-
-    file_format = f'{outfile}{sep}%0{blocks_digits}x'
-
-    parent = bytes.fromhex(metadata['sha256'])[:PARENT_SIZE]
-    metadata_blocks = (json.dumps(metadata).encode(),)
-    file_blocks = hasher.file_blocks(filename, BLOCK_SIZE)
-    blocks = itertools.chain(metadata_blocks, file_blocks)
-
-    for sequence_number, block in enumerate(blocks):
-        chunk = struct.pack(f'>q', sequence_number) + parent + block
-        assert len(chunk) <= CHUNK_SIZE
-        filename = file_format % sequence_number
-        result_file = qr.write(chunk, filename)
-        callback and callback(result_file)
-        bar.next_item(result_file.name)
-
-    bar.finish()
-    return file_format, sequence_number + 1, metadata
+    return Writer(filename).write(outfile, callback)
 
 
 if __name__ == '__main__':
