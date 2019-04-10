@@ -6,7 +6,7 @@ SUFFIX = '.png'
 CHUNK_SIZE = 1051
 
 
-def write(data, out):
+def write_qr(data, out):
     if len(data) > CHUNK_SIZE:
         raise ValueError('data is too big')
 

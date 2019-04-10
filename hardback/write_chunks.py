@@ -16,7 +16,7 @@ class Writer:
         self.block_count, rem = divmod(self.metadata['size'], BLOCK_SIZE)
         self.block_count += 1 + bool(rem)
 
-    def write(self, outdir):
+    def write_chunks(self, outdir):
         os.makedirs(outdir, exist_ok=True)
 
         digits = math.ceil(math.log(self.block_count, 16))
@@ -31,4 +31,4 @@ class Writer:
             chunk = struct.pack(f'>q', sequence_number) + parent + block
             assert len(chunk) <= CHUNK_SIZE
             filename = self.file_format % sequence_number
-            yield qr.write(chunk, filename)
+            yield qr.write_qr(chunk, filename)
