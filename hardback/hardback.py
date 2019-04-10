@@ -1,4 +1,4 @@
-import png, yaml
+import png
 from ebooklib import epub
 from pathlib import Path
 from . import (
@@ -14,6 +14,7 @@ class Hardback:
         p = Path(desc.filename)
         desc.book.cover = desc.book.cover or (p.suffix in _SUFFIXES) and p
         desc.outfile = desc.outfile or p.stem + '.epub'
+        desc.book.title = desc.book.title or p.name
 
         self.metadata = metadata.metadata(desc)
         self.writer = chunk_writer.ChunkWriter(
@@ -34,7 +35,7 @@ class Hardback:
         item = epub.EpubHtml(
             title='Metadata',
             file_name='chapter1.xhtml',
-            content=_METADATA_PAGE % yaml.dump(self.metadata))
+            content=_METADATA_PAGE % metadata.format(**self.metadata))
         item.add_item(self.book.default_css)
         return item
 

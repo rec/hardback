@@ -21,11 +21,30 @@ def metadata(desc):
         'block': {'count': block_count, 'size': BLOCK_SIZE},
         'chunk': {'count': chunk_count, 'size': CHUNK_SIZE},
         'dimensions': desc.dimensions,
-        'filename': pathlib.Path(desc.filename).name,
-        'sha256': hasher.hash_file(desc.filename).hexdigest(),
         'file_bytes': stat.st_size,
+        'file_name': pathlib.Path(desc.filename).name,
+        'sha256': hasher.hash_file(desc.filename).hexdigest(),
         'timestamp': str(datetime.datetime.utcfromtimestamp(stat.st_mtime)),
     }
+
+
+def format(sha256, **metadata):
+    print(metadata)
+    return FORMAT.format(s1=sha256[:32], s2=sha256[32:], **metadata)
+
+
+FORMAT = """\
+block: {{count: {block[count]},  size: {block[size]}}}
+chunk: {{count: {chunk[count]},  size: {chunk[size]}}}
+dimensions: {dimensions}
+file_bytes: {file_bytes}
+file_name: {file_name}
+timestamp: '{timestamp}'
+sha256: "\\
+  {s1}\\
+  {s2}\\
+"
+"""
 
 
 if __name__ == '__main__':
