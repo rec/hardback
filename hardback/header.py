@@ -6,14 +6,20 @@ representing metadata about the file.
 import datetime, os
 from . import hasher
 
+BLOCK_SIZE = 1024
 
-def header(filename):
+
+def header(filename, block_size=BLOCK_SIZE):
     stat = os.stat(filename)
+    block_count, rem = divmod(stat.st_size, block_size)
+    block_count += 1 + bool(rem)
     return {
+        'block_count': block_count,
+        'block_size': block_size,
         'filename': os.path.basename(filename),
-        'timestamp': str(datetime.datetime.utcfromtimestamp(stat.st_mtime)),
-        'size': stat.st_size,
         'sha256': hasher.hash_file(filename).hexdigest(),
+        'size': stat.st_size,
+        'timestamp': str(datetime.datetime.utcfromtimestamp(stat.st_mtime)),
     }
 
 

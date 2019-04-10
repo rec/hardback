@@ -26,7 +26,6 @@ class Hardback:
     remove_image_files: bool = True
     columns: int = 7
     rows: int = 5
-    metadata: dict = Factory(dict)
     options: dict = Factory(dict)
     outfile: str = ''
     qr_dir: str = '.output'

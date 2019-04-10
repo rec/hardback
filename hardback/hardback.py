@@ -1,7 +1,8 @@
 import png, yaml
 from ebooklib import epub
 from pathlib import Path
-from . import chunk_sequence, create_epub, elapsed_bar, qr_table, write_chunks
+from . import (
+    chunk_writer, chunk_sequence, create_epub, elapsed_bar, header, qr_table)
 
 IMAGE_SUFFIXES = '.jpeg', '.jpg', '.png'
 EMPTY_PNG = Path('empty.png')
@@ -9,15 +10,23 @@ EMPTY_PNG = Path('empty.png')
 
 class Hardback:
     def __init__(self, desc):
-        self._set_desc(desc)
-        self.writer = write_chunks.Writer(self.desc.filename)
+        if not desc.filename:
+            raise ValueError('No filename')
+        self.desc = desc
+
+        p = Path(desc.filename)
+        desc.book.cover = desc.book.cover or (p.suffix in IMAGE_SUFFIXES) and p
+        desc.outfile = desc.outfile or p.stem + '.epub'
+
+        self.metadata = header.header(desc.filename)
+        self.writer = chunk_writer.ChunkWriter(
+            desc.filename, desc.qr_dir, self.metadata)
         self.bar = elapsed_bar.ElapsedBar(
             'Writing',
-            max=self.writer.block_count,
-            enable=self.desc.enable_bar)
-        self.metadata = dict(self.writer.metadata, **self.desc.metadata)
+            max=self.metadata['block_count'],
+            enable=desc.enable_bar)
         self.book = create_epub.EpubBook()
-        self.book.add_desc(self.desc.book)
+        self.book.add_desc(desc.book)
 
     def write(self):
         self.book.add_chapters([self._chapter1(), self._chapter2()])
@@ -47,7 +56,7 @@ class Hardback:
             item = epub.EpubItem(file_name=path.name, content=result)
             self.book.add_item(item)
 
-        chunks = self.writer.write_chunks(self.desc.qr_dir)
+        chunks = self.writer.write_chunks()
         for self.block_count, f in enumerate(chunks):
             f = Path(f)
             add_image_item(f)
@@ -60,21 +69,13 @@ class Hardback:
             self.bar.next_item(f.name)
             yield f.name
 
-    def _set_desc(self, desc):
-        if not desc.filename:
-            raise ValueError('No filename')
-        p = Path(desc.filename)
-        desc.book.cover = desc.book.cover or (p.suffix in IMAGE_SUFFIXES) and p
-        desc.outfile = desc.outfile or p.stem + '.epub'
-        self.desc = desc
-
 
 def _copy_to_empty_image(source, target):
     width, height, pixels, options = png.Reader(str(source)).read()
 
     pixels = list(pixels)
     for p in pixels:
-        p[:] = [1 for i in range(len(p))]
+        p[:] = [1 for i in p]
 
     with open(target, 'wb') as fp:
         png.Writer(**options).write(fp, pixels)
