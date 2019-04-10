@@ -3,14 +3,14 @@ from progress.bar import ChargingBar
 
 
 class ElapsedBar(ChargingBar):
-    def __init__(self, *args, enabled=True, **kwds):
+    def __init__(self, *args, enable=True, **kwds):
         super().__init__(*args, **kwds)
         self.__start_time = datetime.datetime.now()
         self.__index = 0
-        self.__enabled = enabled
+        self.__enable = enable
 
     def next_item(self, message):
-        if not self.__enabled:
+        if not self.__enable:
             return
 
         self.__index += 1
