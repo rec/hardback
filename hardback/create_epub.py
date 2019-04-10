@@ -23,9 +23,9 @@ class EpubBook(epub.EpubBook):
         for a in book.authors:
             self.add_author(a)
 
-        if book.cover_image:
-            with open(book.cover_image, 'rb') as fp:
-                filename = 'cover_' + Path(book.cover_image).name
+        if book.cover:
+            with open(book.cover, 'rb') as fp:
+                filename = 'cover_' + Path(book.cover).name
                 self.set_cover(filename, fp.read())
 
     def add_chapters(self, chapters):

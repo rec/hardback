@@ -1,5 +1,6 @@
-import pathlib, yaml
+import yaml
 from ebooklib import epub
+from pathlib import Path
 from . import chunk_sequence, create_epub, elapsed_bar, qr_table, write_chunks
 
 IMAGE_SUFFIXES = '.jpeg', '.jpg', '.png'
@@ -7,15 +8,12 @@ IMAGE_SUFFIXES = '.jpeg', '.jpg', '.png'
 
 class Hardback:
     def __init__(self, desc):
-        self.desc = desc
-        if not desc.book.cover:
-            if pathlib.Path(desc.file).suffix in IMAGE_SUFFIXES:
-                desc.book.cover = desc.file
+        self.desc = _fill_desc(desc)
         self.writer = write_chunks.Writer(desc.filename)
         self.bar = elapsed_bar.ElapsedBar(
             'Writing',
             max=self.writer.block_count,
-            enabled=desc.enable_bar)
+            enable=desc.enable_bar)
         self.metadata = dict(self.writer.metadata, **self.desc.metadata)
 
     def write(self):
@@ -27,9 +25,9 @@ class Hardback:
             file_name='chapter1.xhtml',
             content='<pre>\n%s\n</pre>' % yaml.dump(self.metadata))
 
-        r, c = self.desc.columns, self.desc.rows
-        chunks = chunk_sequence(self._items(book), r * c)
-        table = qr_table.qr_table(chunks, r, c)
+        c, r = self.desc.columns, self.desc.rows
+        chunks = chunk_sequence.chunk_sequence(self._items(book), c * r)
+        table = qr_table.qr_table(chunks, c, r)
 
         chapter2 = epub.EpubHtml(
             title=self.desc.filename,
@@ -43,14 +41,24 @@ class Hardback:
 
     def _items(self, book):
         self.block_count = 0
-        for file in self.writer.write(self.desc.outdir):
+        for f in self.writer.write(self.desc.qr_dir):
+            f = Path(f)
             self.block_count += 1
-            item = epub.EpubItem(
-                file_name=file.name, content=file.read_bytes())
+            item = epub.EpubItem(file_name=f.name, content=f.read_bytes())
             book.add_item(item)
-            self.desc.remove_image_files and file.unlink()
-            self.bar.next_item(file.name)
-            yield file
+            self.desc.remove_image_files and f.unlink()
+            self.bar.next_item(f.name)
+            yield f.name
+
+
+def _fill_desc(desc):
+    if not desc.filename:
+        raise ValueError('No filename')
+    p = Path(desc.filename)
+    desc.book.cover = desc.book.cover or (p.suffix in IMAGE_SUFFIXES) and p
+    desc.outfile = desc.outfile or p.stem + '.epub'
+
+    return desc
 
 
 if __name__ == '__main__':

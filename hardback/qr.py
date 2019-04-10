@@ -13,8 +13,10 @@ def write(data, out):
     if isinstance(out, str):
         if not out.endswith(SUFFIX):
             out += SUFFIX
-        out = open(out, 'wb')
+        output = open(out, 'wb')
+    else:
+        output, out = out, out.name
 
     qr = segno.make_qr(data, version=VERSION, error='H')
-    qr.save(out)
+    qr.save(output)
     return out

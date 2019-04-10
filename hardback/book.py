@@ -13,7 +13,7 @@ class Chapter:
 class Book:
     identifier: str = ''
     title: str = ''
-    cover_image: str = ''
+    cover: str = ''
     language: str = 'en'
     authors: Tuple[str] = ()
 
@@ -28,3 +28,5 @@ class Hardback:
     rows: int = 5
     metadata: dict = Factory(dict)
     options: dict = Factory(dict)
+    outfile: str = ''
+    qr_dir: str = '.output'
