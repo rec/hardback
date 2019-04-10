@@ -17,8 +17,6 @@ class Writer:
         self.block_count += 1 + bool(rem)
 
     def write_chunks(self, outdir):
-        os.makedirs(outdir, exist_ok=True)
-
         digits = math.ceil(math.log(self.block_count, 16))
         self.file_format = os.path.join(outdir, f'%0{digits}x{qr.SUFFIX}')
 

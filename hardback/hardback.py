@@ -4,7 +4,7 @@ from pathlib import Path
 from . import chunk_sequence, create_epub, elapsed_bar, qr_table, write_chunks
 
 IMAGE_SUFFIXES = '.jpeg', '.jpg', '.png'
-EMPTY_PNG = 'empty.png'
+EMPTY_PNG = Path('empty.png')
 
 
 class Hardback:
@@ -16,59 +16,49 @@ class Hardback:
             max=self.writer.block_count,
             enable=self.desc.enable_bar)
         self.metadata = dict(self.writer.metadata, **self.desc.metadata)
+        self.book = create_epub.EpubBook()
+        self.book.add_desc(self.desc.book)
 
     def write(self):
-        book = create_epub.EpubBook()
-        book.add_desc(self.desc.book)
+        self.book.add_chapters([self._chapter1(), self._chapter2()])
+        self.book.write(self.desc.outfile, **self.desc.options)
+        self.bar.finish()
 
-        chapter1 = epub.EpubHtml(
+    def _chapter1(self):
+        return epub.EpubHtml(
             title='Metadata',
             file_name='chapter1.xhtml',
             content='<pre>\n%s\n</pre>' % yaml.dump(self.metadata))
 
+    def _chapter2(self):
         c, r = self.desc.columns, self.desc.rows
-        items = self._items(book)
-        chunks = chunk_sequence.chunk_sequence(items, c, r, EMPTY_PNG)
+        images = self._qr_code_images()
+        chunks = chunk_sequence.chunk_sequence(images, c, r, EMPTY_PNG)
         table = qr_table.qr_table(chunks, c, r)
 
-        chapter2 = epub.EpubHtml(
+        return epub.EpubHtml(
             title=self.desc.filename,
             file_name='chapter2.xhtml',
             content=table)
 
-        book.add_chapters([chapter1, chapter2])
-        book.write(self.desc.outfile, **self.desc.options)
+    def _qr_code_images(self):
+        def add_image_item(path):
+            result = path.read_bytes()
+            item = epub.EpubItem(file_name=path.name, content=result)
+            self.book.add_item(item)
 
-        self.bar.finish()
-
-    def _items(self, book):
         chunks = self.writer.write_chunks(self.desc.qr_dir)
         for self.block_count, f in enumerate(chunks):
             f = Path(f)
-            item = epub.EpubItem(file_name=f.name, content=f.read_bytes())
-            book.add_item(item)
+            add_image_item(f)
             if not self.block_count:
-                book.add_item(self._empty_image_item(f))
+                _copy_to_empty_image(f, EMPTY_PNG)
+                add_image_item(EMPTY_PNG)
+                self.desc.remove_image_files and EMPTY_PNG.unlink()
 
             self.desc.remove_image_files and f.unlink()
             self.bar.next_item(f.name)
             yield f.name
-
-    def _empty_image_item(self, f):
-        width, height, pixels, options = png.Reader(str(f)).read()
-
-        pixels = list(pixels)
-        for p in pixels:
-            p[:] = [1 for i in range(len(p))]
-
-        with open(EMPTY_PNG, 'wb') as fp:
-            png.Writer(**options).write(fp, pixels)
-
-        with open(EMPTY_PNG, 'rb') as fp:
-            empty = fp.read()
-
-        self.desc.remove_image_files and Path(EMPTY_PNG).unlink()
-        return epub.EpubItem(file_name=EMPTY_PNG, content=empty)
 
     def _set_desc(self, desc):
         if not desc.filename:
@@ -77,6 +67,17 @@ class Hardback:
         desc.book.cover = desc.book.cover or (p.suffix in IMAGE_SUFFIXES) and p
         desc.outfile = desc.outfile or p.stem + '.epub'
         self.desc = desc
+
+
+def _copy_to_empty_image(source, target):
+    width, height, pixels, options = png.Reader(str(source)).read()
+
+    pixels = list(pixels)
+    for p in pixels:
+        p[:] = [1 for i in range(len(p))]
+
+    with open(target, 'wb') as fp:
+        png.Writer(**options).write(fp, pixels)
 
 
 if __name__ == '__main__':
