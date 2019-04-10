@@ -1,7 +1,8 @@
 EbookLib
+attrs
 cfgs
 import_all
-segno
 progress
+pypng
 pyyaml
-attrs
+segno
