@@ -9,7 +9,7 @@ from . import hasher
 BLOCK_SIZE = 1024
 
 
-def header(filename, block_size=BLOCK_SIZE):
+def metadata(filename, block_size=BLOCK_SIZE):
     stat = os.stat(filename)
     block_count, rem = divmod(stat.st_size, block_size)
     block_count += 1 + bool(rem)
@@ -26,4 +26,4 @@ def header(filename, block_size=BLOCK_SIZE):
 if __name__ == '__main__':
     import json, sys
 
-    print(*(json.dumps(header(i)) for i in sys.argv[1:]), end='\n')
+    print(*(json.dumps(metadata(i)) for i in sys.argv[1:]), end='\n')

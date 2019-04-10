@@ -2,7 +2,7 @@ import png, yaml
 from ebooklib import epub
 from pathlib import Path
 from . import (
-    chunk_writer, chunk_sequence, create_epub, elapsed_bar, header, qr_table)
+    chunk_writer, chunk_sequence, create_epub, elapsed_bar, metadata, qr_table)
 
 IMAGE_SUFFIXES = '.jpeg', '.jpg', '.png'
 EMPTY_PNG = Path('empty.png')
@@ -18,7 +18,7 @@ class Hardback:
         desc.book.cover = desc.book.cover or (p.suffix in IMAGE_SUFFIXES) and p
         desc.outfile = desc.outfile or p.stem + '.epub'
 
-        self.metadata = header.header(desc.filename)
+        self.metadata = metadata.metadata(desc.filename)
         self.writer = chunk_writer.ChunkWriter(
             desc.filename, desc.qr_dir, self.metadata)
         self.bar = elapsed_bar.ElapsedBar(
