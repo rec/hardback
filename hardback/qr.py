@@ -1,9 +1,12 @@
 import segno
 
+from . import constants
+
 VERSION = 36
 ERROR_CORRECTION = 'H'
 SUFFIX = '.png'
 CHUNK_SIZE = 1051
+assert constants.CHUNK_SIZE <= CHUNK_SIZE
 
 
 def write_qr(data, out):

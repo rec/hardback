@@ -18,12 +18,12 @@ class Hardback:
         desc.book.cover = desc.book.cover or (p.suffix in IMAGE_SUFFIXES) and p
         desc.outfile = desc.outfile or p.stem + '.epub'
 
-        self.metadata = metadata.metadata(desc.filename)
+        self.metadata = metadata.metadata(desc)
         self.writer = chunk_writer.ChunkWriter(
             desc.filename, desc.qr_dir, self.metadata)
         self.bar = elapsed_bar.ElapsedBar(
             'Writing',
-            max=self.metadata['block_count'],
+            max=self.metadata['block']['count'],
             enable=desc.enable_bar)
         self.book = create_epub.EpubBook()
         self.book.add_desc(desc.book)
@@ -40,7 +40,7 @@ class Hardback:
             content='<pre>\n%s\n</pre>' % yaml.dump(self.metadata))
 
     def _chapter2(self):
-        c, r = self.desc.columns, self.desc.rows
+        c, r = self.desc.dimensions
         images = self._qr_code_images()
         chunks = chunk_sequence.chunk_sequence(images, c, r, EMPTY_PNG)
         table = qr_table.qr_table(chunks, c, r)

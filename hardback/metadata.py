@@ -3,22 +3,27 @@ Return a dictionary representing the header block - a block in JSON
 representing metadata about the file.
 """
 
-import datetime, os
-from . import hasher
+import datetime, os, pathlib
+from . import chunk_sequence, hasher
+from . constants import BLOCK_SIZE, CHUNK_SIZE
 
-BLOCK_SIZE = 1024
 
+def metadata(desc):
+    stat = os.stat(desc.filename)
+    block_count, rem = divmod(stat.st_size, BLOCK_SIZE)
+    block_count += bool(rem)
 
-def metadata(filename, block_size=BLOCK_SIZE):
-    stat = os.stat(filename)
-    block_count, rem = divmod(stat.st_size, block_size)
-    block_count += 1 + bool(rem)
+    c, r = desc.dimensions
+    metadata_every = chunk_sequence.guess_metadata_every(c * r)
+    chunk_count = 1 + block_count + (block_count // metadata_every)
+
     return {
-        'block_count': block_count,
-        'block_size': block_size,
-        'filename': os.path.basename(filename),
-        'sha256': hasher.hash_file(filename).hexdigest(),
-        'size': stat.st_size,
+        'block': {'count': block_count, 'size': BLOCK_SIZE},
+        'chunk': {'count': chunk_count, 'size': CHUNK_SIZE},
+        'dimensions': desc.dimensions,
+        'filename': pathlib.Path(desc.filename).name,
+        'sha256': hasher.hash_file(desc.filename).hexdigest(),
+        'file_bytes': stat.st_size,
         'timestamp': str(datetime.datetime.utcfromtimestamp(stat.st_mtime)),
     }
 

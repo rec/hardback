@@ -24,8 +24,7 @@ class Hardback:
     book: Book = Factory(Book)
     enable_bar: bool = True
     remove_image_files: bool = True
-    columns: int = 7
-    rows: int = 5
+    dimensions: Tuple[int] = (5, 7)
     options: dict = Factory(dict)
     outfile: str = ''
     qr_dir: str = '.output'

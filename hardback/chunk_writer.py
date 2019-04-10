@@ -1,11 +1,6 @@
 import itertools, json, math, os, struct
 from . import hasher, qr
-
-PARENT_SIZE = 16
-BLOCK_SIZE = 1024
-SEQUENCE_NUMBER_SIZE = 8
-CHUNK_SIZE = PARENT_SIZE + BLOCK_SIZE + SEQUENCE_NUMBER_SIZE
-assert CHUNK_SIZE <= qr.CHUNK_SIZE
+from . constants import PARENT_SIZE, BLOCK_SIZE, CHUNK_SIZE
 
 
 class ChunkWriter:
@@ -15,7 +10,7 @@ class ChunkWriter:
         self.metadata = metadata
 
     def write_chunks(self):
-        digits = math.ceil(math.log(self.metadata['block_count'], 16))
+        digits = math.ceil(math.log(self.metadata['block']['count'], 16))
         os.makedirs(self.outdir, exist_ok=True)
         self.file_format = os.path.join(self.outdir, f'%0{digits}x{qr.SUFFIX}')
 
