@@ -28,6 +28,9 @@ class EpubBook(epub.EpubBook):
                 filename = 'cover_' + Path(book.cover).name
                 self.set_cover(filename, fp.read())
 
+        self.default_css = make_css('default')
+        self.add_item(self.default_css)
+
     def add_chapters(self, chapters):
         self.add_items(*chapters)
         self.toc = chapters

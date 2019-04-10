@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import List, Tuple
 from attr import dataclass, Factory
 
 
@@ -24,7 +24,7 @@ class Hardback:
     book: Book = Factory(Book)
     enable_bar: bool = True
     remove_image_files: bool = True
-    dimensions: Tuple[int] = (5, 7)
+    dimensions: List[int] = Factory(lambda: [5, 7])
     options: dict = Factory(dict)
     outfile: str = ''
     qr_dir: str = '.output'

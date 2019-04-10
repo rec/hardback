@@ -4,9 +4,6 @@ from pathlib import Path
 from . import (
     chunk_writer, chunk_sequence, create_epub, elapsed_bar, metadata, qr_table)
 
-IMAGE_SUFFIXES = '.jpeg', '.jpg', '.png'
-EMPTY_PNG = Path('empty.png')
-
 
 class Hardback:
     def __init__(self, desc):
@@ -15,7 +12,7 @@ class Hardback:
         self.desc = desc
 
         p = Path(desc.filename)
-        desc.book.cover = desc.book.cover or (p.suffix in IMAGE_SUFFIXES) and p
+        desc.book.cover = desc.book.cover or (p.suffix in _SUFFIXES) and p
         desc.outfile = desc.outfile or p.stem + '.epub'
 
         self.metadata = metadata.metadata(desc)
@@ -34,15 +31,17 @@ class Hardback:
         self.bar.finish()
 
     def _chapter1(self):
-        return epub.EpubHtml(
+        item = epub.EpubHtml(
             title='Metadata',
             file_name='chapter1.xhtml',
-            content='<pre>\n%s\n</pre>' % yaml.dump(self.metadata))
+            content=_METADATA_PAGE % yaml.dump(self.metadata))
+        item.add_item(self.book.default_css)
+        return item
 
     def _chapter2(self):
         c, r = self.desc.dimensions
         images = self._qr_code_images()
-        chunks = chunk_sequence.chunk_sequence(images, c, r, EMPTY_PNG)
+        chunks = chunk_sequence.chunk_sequence(images, c, r, _EMPTY_PNG)
         table = qr_table.qr_table(chunks, c, r)
 
         return epub.EpubHtml(
@@ -61,13 +60,21 @@ class Hardback:
             f = Path(f)
             add_image_item(f)
             if not self.block_count:
-                _copy_to_empty_image(f, EMPTY_PNG)
-                add_image_item(EMPTY_PNG)
-                self.desc.remove_image_files and EMPTY_PNG.unlink()
+                _copy_to_empty_image(f, _EMPTY_PNG)
+                add_image_item(_EMPTY_PNG)
+                self.desc.remove_image_files and _EMPTY_PNG.unlink()
 
             self.desc.remove_image_files and f.unlink()
             self.bar.next_item(f.name)
             yield f.name
+
+
+_SUFFIXES = '.jpeg', '.jpg', '.png'
+_EMPTY_PNG = Path('empty.png')
+
+_METADATA_PAGE = """<h2>Metadata</h2>
+<pre>%s
+</pre>"""
 
 
 def _copy_to_empty_image(source, target):
