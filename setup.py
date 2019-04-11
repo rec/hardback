@@ -1,4 +1,4 @@
-import os, setuptools, sys
+import os, setuptools, shutil, sys
 from setuptools.command.test import test as TestCommand
 
 
@@ -62,6 +62,25 @@ class ApplicationCommand(setuptools.Command):
             sys.argv[:] = old_argv
 
 
+class CleanCommand(setuptools.Command):
+    description = 'Clean generated files'
+    user_options = []
+    TO_CLEAN = 'dist/', 'build/', 'hardback.spec'
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        for f in self.TO_CLEAN:
+            if f.endswith('/'):
+                shutil.rmtree(f, ignore_errors=True)
+            else:
+                os.remove(f)
+
+
 NAME = 'hardback'
 OWNER = 'timedata-org'
 VERSION_FILE = os.path.join(os.path.dirname(__file__), NAME, 'VERSION')
@@ -89,6 +108,7 @@ setuptools.setup(
 
     cmdclass={
         'application': ApplicationCommand,
+        'clean': CleanCommand,
         'coverage': CoverageCommand,
         'test': TestCommand,
     },
