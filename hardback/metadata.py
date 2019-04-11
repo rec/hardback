@@ -29,7 +29,6 @@ def metadata(desc):
 
 
 def format(sha256, **metadata):
-    print(metadata)
     return FORMAT.format(s1=sha256[:32], s2=sha256[32:], **metadata)
 
 

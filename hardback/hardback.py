@@ -2,7 +2,8 @@ import png
 from ebooklib import epub
 from pathlib import Path
 from . import (
-    chunk_writer, chunk_sequence, create_epub, elapsed_bar, metadata, qr_table)
+    book, chunk_writer, chunk_sequence, create_epub, elapsed_bar, metadata,
+    qr_table)
 
 
 class Hardback:
@@ -89,10 +90,12 @@ def _copy_to_empty_image(source, target):
         png.Writer(**options).write(fp, pixels)
 
 
-if __name__ == '__main__':
-    import sys
-    from . import book
-
-    desc = book.Hardback(filename=sys.argv[1])
+def hardback(filename):
+    desc = book.Hardback(filename=filename)
     hardback = Hardback(desc)
     hardback.write()
+
+
+if __name__ == '__main__':
+    import sys
+    hardback(sys.argv[1])
