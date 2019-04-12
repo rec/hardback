@@ -1,5 +1,6 @@
 import itertools, json, math, os, struct
-from . import hasher, qr
+from . import hasher
+from . qr import write_qr as qr
 from . constants import PARENT_SIZE, BLOCK_SIZE, CHUNK_SIZE
 
 

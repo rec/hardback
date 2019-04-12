@@ -9,7 +9,7 @@ class Chapter:
     content: str = ''
 
 
-@dataclass
+@dataclass(slots=True)
 class Book:
     identifier: str = ''
     title: str = ''
@@ -18,7 +18,7 @@ class Book:
     authors: Tuple[str] = ()
 
 
-@dataclass
+@dataclass(slots=True)
 class Hardback:
     filename: str = ''
     book: Book = Factory(Book)

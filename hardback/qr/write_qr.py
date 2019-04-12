@@ -1,6 +1,6 @@
 import segno
 
-from . import constants
+from .. import constants
 
 VERSION = 36
 ERROR_CORRECTION = 'H'

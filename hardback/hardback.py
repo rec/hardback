@@ -2,8 +2,8 @@ import png
 from ebooklib import epub
 from pathlib import Path
 from . import (
-    book, chunk_writer, chunk_sequence, create_epub, elapsed_bar, metadata,
-    qr_table)
+    book, chunk_writer, chunk_sequence, create_epub, elapsed_bar, metadata)
+from . qr import qr_table
 
 
 class Hardback:

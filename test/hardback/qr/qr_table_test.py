@@ -1,5 +1,5 @@
 import unittest
-from hardback.qr_table import qr_table
+from hardback.qr.qr_table import qr_table
 
 
 def join_qr(file_count, columns, rows):
