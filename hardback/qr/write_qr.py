@@ -1,25 +1,21 @@
 import segno
 
-from .. import constants
-
 VERSION = 36
-ERROR_CORRECTION = 'H'
+ERROR = 'H'
 SUFFIX = '.png'
-CHUNK_SIZE = 1051
-assert constants.CHUNK_SIZE <= CHUNK_SIZE
 
 
-def write_qr(data, out):
-    if len(data) > CHUNK_SIZE:
-        raise ValueError('data is too big')
+def write_qr(data, out, version=VERSION, error=ERROR):
+    def write(fp):
+        qr = segno.make_qr(data, version=version, error=error)
+        qr.save(fp)
+        return fp.name
 
-    if isinstance(out, str):
-        if not out.endswith(SUFFIX):
-            out += SUFFIX
-        output = open(out, 'wb')
-    else:
-        output, out = out, out.name
+    if not isinstance(out, str):
+        return write(out)
 
-    qr = segno.make_qr(data, version=VERSION, error='H')
-    qr.save(output)
-    return out
+    if not out.endswith(SUFFIX):
+        out += SUFFIX
+
+    with open(out, 'wb') as fp:
+        return write(fp)
