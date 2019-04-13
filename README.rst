@@ -2,7 +2,7 @@ hardback: hard-copy backup of digital data
 ------------------------------------------------
 
 Newest updates are
-`here <https://github.com/rec/hardback/blob/master/UPDATES.rst`_.
+`here <https://github.com/rec/hardback/blob/master/UPDATES.rst>`_.
 
 In one sentence
 ==================

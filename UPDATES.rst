@@ -51,6 +51,35 @@ bit of code (that I would tell you how to type).
 (For various dull reasons, drag-and-drop/application-land on Mac is hard to
 accomplish "right now".)
 
+More error correction?
+========================
+
+I'm spending considerable time contemplating how this book could be damaged.
+For example, what if you made a hole in it - one that happened to get rid of the
+metadata chunk?
+
+Well, that's not actually an issue because there's already code that puts a
+duplicate metadata block at some increment "around 1.5 pages apart" and with a
+greatest common divisor of 1 with the page size, which means that the metadata
+will appear in every area of the page over enough pages.
+
+(Actually, as I explained this I realized there's a subtle bug in my code
+there, which I `just fixed
+<https://github.com/rec/hardback/commit/712da73d61e5c78ee2c76d955d73bc31e288f55d>`_)
+
+And there's actual error correction on each individual RFC code (Reed-Solomon
+error correction codes to be specific.
+
+But we could easily add Reed-Solomon correction also to the whole thing.
+
+The advantage of error correction is that you can reproduce the document even if
+some whole QR codes were completely obliterated or even changed - even if
+they're error-correcting QR codes that are obliterated or changed.
+
+I'll look into this.  Perhaps we can use less error correction on each
+individual QR code and more on the whole document?
+
+
 Another idea
 ============
 
