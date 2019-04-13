@@ -20,6 +20,6 @@ def chunk_sequence(items, columns, rows, pad_item=None):
 
 
 def guess_metadata_every(page_size):
-    ps = 1.5 * page_size
-    sizes = range(page_size + 1, 2 * page_size)
-    return -min((math.gcd(page_size, i), abs(ps - i), -i) for i in sizes)[2]
+    p = 1.5 * page_size
+    sizes = range(page_size, 2 * page_size)
+    return -min((math.gcd(page_size, i + 1), abs(p - i), -i) for i in sizes)[2]
