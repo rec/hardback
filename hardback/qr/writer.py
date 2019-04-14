@@ -5,8 +5,11 @@ from . codes import CODES
 
 @attr.s(slots=True)
 class Writer:
-    version = attr.ib(default=36)
-    error = attr.ib(default='H')
+    DEFAULT_VERSION = 36
+    DEFAULT_QUALITY = 'H'
+
+    version = attr.ib(default=DEFAULT_VERSION)
+    error = attr.ib(default=DEFAULT_QUALITY)
 
     SUFFIX = '.png'
 

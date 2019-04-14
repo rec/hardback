@@ -23,7 +23,7 @@ class Hardback:
         self.bar = elapsed_bar.ElapsedBar(
             'Writing',
             max=self.metadata['block']['count'],
-            enable=desc.enable_bar)
+            enable=desc.progress_bar)
         self.book = create_epub.EpubBook()
         self.book.add_desc(desc.book)
 
