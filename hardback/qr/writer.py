@@ -1,13 +1,14 @@
 import attr, segno
+from .. import constants
 from . codes import CODES
 
 
 @attr.s(slots=True)
 class Writer:
-    SUFFIX = '.png'
-
     version = attr.ib(default=36)
     error = attr.ib(default='H')
+
+    SUFFIX = '.png'
 
     def write(self, data, out):
         def write(fp):
@@ -15,7 +16,7 @@ class Writer:
             qr.save(fp)
             return fp.name
 
-        if len(data) > self.binary_size:
+        if len(data) > self.block_size:
             raise ValueError
         if not isinstance(out, str):
             return write(out)
@@ -39,5 +40,9 @@ class Writer:
         return
 
     @property
-    def binary_size(self):
+    def block_size(self):
         return getattr(CODES[self.version - 1].binary, self.error)
+
+    @property
+    def chunk_size(self):
+        return self.block_size + constants.HEADER_SIZE
