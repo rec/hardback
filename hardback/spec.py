@@ -18,7 +18,7 @@ class Book:
     title: str = ''
     cover: str = ''
     language: str = 'en'
-    authors: Tuple[str] = ()
+    authors: Tuple[str] = ()  # type: ignore
 
 
 @dataclass(slots=True)
