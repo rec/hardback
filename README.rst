@@ -61,7 +61,7 @@ The official list of all the QR code formats,
 https://www.qrcode.com/en/about/version.html is poorly organized - click on
 31-40 and then scroll down.
 
-I'm going to use that to hold 1024 bytes of target data with a sequence number
+I'm going to use that to hold 1024 bytes of target data with an index
 and a hash of the original document, totalling 1,048 bytes.  (The extra 3 bytes
 aren't entirely wasted - we get a tiny bit better error correction.)
 
@@ -70,14 +70,17 @@ Data layout
 =============================
 
 The binary data is divided into 1K *chunks*. A chunk is written to a QR code
-as part of a *block*, which also contains a sequence number and a hash of the
+as part of a *block*, which also contains an index and a hash of the
 original documet.
 
-The layout in bytes within the block  is like this:
+The layout in bytes within the block is by default like this:
 
 .. code-block:: text
 
-    | sequence [8] | hash [16] | chunk [up to 1024] |
+    | index [8] | document[8] | chunk [up to 1024] |
+
+
+but you can customize all these sizes.
 
 There's no checksum or error correction for this block itself, as the QR code is
 already taking care of that for us.
@@ -85,28 +88,28 @@ already taking care of that for us.
 ``hash`` is the first 16 bytes of the 32-byte SHA256 hash of the entire
 document.  ``data`` is one kilobyte from your target file.
 
-``sequence`` is an 8-byte signed integer - a number that can be positive,
+``index`` is an 8-byte signed integer - a number that can be positive,
 negative or zero, and that fits into 8 bytes (or equivalently 16 hex digits).
 
-If the sequence number is zero or negative, then it is a metadata block.
+If the index is zero or negative, then it is a metadata block.
 
-The block with sequence number zero always contains a JSON description of the
+The block with index zero always contains a JSON description of the
 original file with the fields ``filename``, ``timestamp``, ``size`` and
 ``sha256``.  If the original filename is too long (which would be about 900
 characters or so!), it is truncated from the left.
 
-Blocks with negative sequence numbers are currently unspecified and reserved
+Blocks with negative indexs are currently unspecified and reserved
 for future expansion or individuals to use.  The first version of the software
-will only produce output with non-negative sequence numbers.
+will only produce output with non-negative indexs.
 
-If ``sequence`` is positive, it's the sequence number of a data block.  This
-means that the first data block has ``sequence`` 1.
+If ``index`` is positive, it's the index of a data block.  This
+means that the first data block has ``index`` 1.
 
 Eight bytes allows us to generate 2 to the power of 63 blocks of 1K each, or
 about 9 zetabytes (which is 9,000,000,000,000 gigabytes) - roughly the entire
 size of all the world's data in 2019.
 
-Within a block, ``sequence`` is is represented in `big-endian
+Within a block, ``index`` is is represented in `big-endian
 <https://en.wikipedia.org/wiki/Endianness>`_ (or intuitive or network order) -
 which means the *most* significant digits occur first.
 

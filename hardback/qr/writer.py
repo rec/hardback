@@ -1,26 +1,28 @@
-import attr, segno
-from .. import constants
+import attr, segno, struct
 from . codes import CODES
 
 
 @attr.s(slots=True)
 class Writer:
-    DEFAULT_VERSION = 36
-    DEFAULT_QUALITY = 'H'
-
-    version = attr.ib(default=DEFAULT_VERSION)
-    error = attr.ib(default=DEFAULT_QUALITY)
+    version = attr.ib(default=36)
+    error = attr.ib(default='H')
+    document_bytes = attr.ib(default=8)
+    index_bytes = attr.ib(default=8)
 
     SUFFIX = '.png'
 
-    def write(self, data, out):
+    def write(self, out, index, document, block):
+        document = document[:self.document_bytes]
+        index = struct.pack(f'>q', index)[:self.index_bytes]
+        data = index + document + block
+
         def write(fp):
             qr = segno.make_qr(data, version=self.version, error=self.error)
             qr.save(fp)
             return fp.name
 
         if len(data) > self.chunk_size:
-            raise ValueError(f'{len(data)} > block_size {self.block_size}')
+            raise ValueError(f'{len(data)} > chunk_size {self.chunk_size}')
         if not isinstance(out, str):
             return write(out)
         if not out.endswith(self.SUFFIX):
@@ -48,4 +50,4 @@ class Writer:
 
     @property
     def block_size(self):
-        return self.chunk_size - constants.HEADER_SIZE
+        return self.chunk_size - self.document_bytes - self.index_bytes

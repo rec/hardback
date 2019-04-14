@@ -1,7 +1,6 @@
-import itertools, json, math, os, struct
+import itertools, json, math, os
 from . import hasher
 from . qr.writer import Writer
-from . constants import PARENT_SIZE
 
 
 class ChunkWriter:
@@ -17,13 +16,11 @@ class ChunkWriter:
         suffix = self.writer.SUFFIX
         self.file_format = os.path.join(self.outdir, f'%0{digits}x{suffix}')
 
-        parent = bytes.fromhex(self.metadata['sha256'])[:PARENT_SIZE]
+        document = bytes.fromhex(self.metadata['sha256'])
         metadata_blocks = (json.dumps(self.metadata).encode(),)
         file_blocks = hasher.file_blocks(self.filename, self.writer.block_size)
         blocks = itertools.chain(metadata_blocks, file_blocks)
 
-        for sequence_number, block in enumerate(blocks):
-            chunk = struct.pack(f'>q', sequence_number) + parent + block
-            assert len(chunk) <= self.writer.chunk_size
-            filename = self.file_format % sequence_number
-            yield self.writer.write(chunk, filename)
+        for index, block in enumerate(blocks):
+            yield self.writer.write(
+                self.file_format % index, index, document, block)
