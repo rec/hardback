@@ -19,8 +19,8 @@ class Writer:
             qr.save(fp)
             return fp.name
 
-        if len(data) > self.block_size:
-            raise ValueError
+        if len(data) > self.chunk_size:
+            raise ValueError(f'{len(data)} > block_size {self.block_size}')
         if not isinstance(out, str):
             return write(out)
         if not out.endswith(self.SUFFIX):
@@ -43,9 +43,9 @@ class Writer:
         return
 
     @property
-    def block_size(self):
+    def chunk_size(self):
         return getattr(CODES[self.version - 1].binary, self.error)
 
     @property
-    def chunk_size(self):
-        return self.block_size + constants.HEADER_SIZE
+    def block_size(self):
+        return self.chunk_size - constants.HEADER_SIZE
