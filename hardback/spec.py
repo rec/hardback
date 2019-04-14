@@ -1,3 +1,6 @@
+"""Contains data classes that specify how a book is put together"""
+
+
 from typing import List, Tuple
 from attr import dataclass, Factory
 

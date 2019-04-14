@@ -2,7 +2,7 @@ import png
 from ebooklib import epub
 from pathlib import Path
 from . import (
-    book, chunk_writer, chunk_sequence, create_epub, elapsed_bar, metadata)
+    chunk_writer, chunk_sequence, create_epub, elapsed_bar, metadata, spec)
 from . qr import qr_table
 
 
@@ -91,7 +91,7 @@ def _copy_to_empty_image(source, target):
 
 
 def hardback(filename):
-    desc = book.Hardback(filename=filename)
+    desc = spec.Hardback(filename=filename)
     hardback = Hardback(desc)
     hardback.write()
 

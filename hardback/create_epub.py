@@ -1,6 +1,6 @@
 from pathlib import Path
 from ebooklib import epub
-from . import book
+from . import spec
 
 CSS_DIR = Path(__file__).parents[1] / 'css'
 
@@ -59,14 +59,14 @@ def make_css(name):
 
 
 def test_write():
-    data = book.Book(
+    data = spec.Book(
         identifier='Identifier',
         title='Title',
         authors=('Tom Ritchford',))
 
     chapters = (
-        book.Chapter('Introduction', 'introduction.xhtml', INTRODUCTION),
-        book.Chapter('About this book', 'about.xhtml', ABOUT_THIS_BOOK),
+        spec.Chapter('Introduction', 'introduction.xhtml', INTRODUCTION),
+        spec.Chapter('About this book', 'about.xhtml', ABOUT_THIS_BOOK),
     )
 
     write_epub(data, chapters, 'test.epub')
