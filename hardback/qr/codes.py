@@ -12,6 +12,7 @@ class ECC:
 
 @dataclass(slots=True)
 class Code:
+    index: int = 0
     pixels: int = 0
     data: ECC = Factory(ECC)
     numeric: ECC = Factory(ECC)
@@ -20,8 +21,8 @@ class Code:
     kanji: ECC = Factory(ECC)
 
     @staticmethod
-    def make(pixels, *eccs):
-        return Code(pixels, *(ECC(*i) for i in eccs))
+    def make(index, pixels, *eccs):
+        return Code(index, pixels, *(ECC(*i) for i in eccs))
 
 
 CODES = tuple(Code.make(*i) for i in RAW_CODES)
