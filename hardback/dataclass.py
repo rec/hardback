@@ -27,9 +27,9 @@ class Hardback:
     book: Book = Factory(Book)
     dimensions: List[int] = Factory(lambda: [5, 7])
     outfile: str = ''
-    qr_writer: Writer = Factory(Writer)
+    qr: Writer = Factory(Writer)
 
     options: dict = Factory(dict)
     progress_bar: bool = True
     remove_image_files: bool = True
-    qr_dir: str = '.output'
+    qr_image_dir: str = '.output'

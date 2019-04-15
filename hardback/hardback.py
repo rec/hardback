@@ -19,8 +19,7 @@ class Hardback:
         desc.book.title = desc.book.title or p.name
 
         self.metadata = metadata.metadata(desc)
-        self.writer = chunk_writer.ChunkWriter(
-            desc.filename, desc.qr_dir, self.metadata)
+        self.writer = chunk_writer.ChunkWriter(desc, self.metadata)
         self.bar = elapsed_bar.ElapsedBar(
             'Writing',
             max=self.metadata['block']['count'],
