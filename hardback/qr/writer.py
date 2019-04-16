@@ -41,10 +41,6 @@ class Writer:
             raise ValueError
 
     @property
-    def code(self):
-        return
-
-    @property
     def chunk_size(self):
         return getattr(CODES[self.version - 1].binary, self.error)
 
