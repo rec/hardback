@@ -1,4 +1,4 @@
-import itertools, json, math, os
+import itertools, math, os, yaml
 from . import hasher
 
 
@@ -15,7 +15,7 @@ class ChunkWriter:
             self.desc.qr_image_dir, f'%0{digits}x{suffix}')
 
         document = bytes.fromhex(self.metadata['sha256'])
-        metadata_blocks = (json.dumps(self.metadata).encode(),)
+        metadata_blocks = (yaml.dump(self.metadata).encode(),)
         file_blocks = hasher.file_blocks(
             self.desc.filename, self.desc.qr.block_size)
         blocks = itertools.chain(metadata_blocks, file_blocks)
