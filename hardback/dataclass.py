@@ -1,8 +1,10 @@
 """Contains data classes that specify how a book is put together"""
 
-from typing import List
-from attr import dataclass, Factory
 from .qr.writer import Writer
+from PIL import ImageFont
+from attr import dataclass, Factory
+from pathlib import Path
+from typing import List
 
 
 @dataclass
@@ -23,7 +25,7 @@ class Book:
 
 @dataclass(slots=True)
 class Hardback:
-    filename: str = ''
+    source: str = ''
     book: Book = Factory(Book)
     dimensions: List[int] = Factory(lambda: [5, 7])
     outfile: str = ''
@@ -38,7 +40,21 @@ class Hardback:
 @dataclass
 class Font:
     name: str = '/Library/Fonts/Courier New Bold.ttf'
-    size: int = 14
+    size: int = 0
+
+    def make_image_font(self):
+        suffix = Path(self.name).suffix
+        if suffix == '.tff':
+            if not self.size:
+                raise ValueError(f'Size needs to be set for Truetype fonts')
+            return ImageFont.truetype(self.name, self.size)
+
+        if suffix == '.pil':
+            if self.size:
+                raise ValueError(f'Size cannot be set for Bitmap fonts')
+            return ImageFont.load(self.name)
+
+        raise ValueError(f'Do not understand file {self.file}')
 
 
 @dataclass

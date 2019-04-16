@@ -17,7 +17,7 @@ class ChunkWriter:
         document = bytes.fromhex(self.metadata['sha256'])
         metadata_blocks = (yaml.dump(self.metadata).encode(),)
         file_blocks = hasher.file_blocks(
-            self.desc.filename, self.desc.qr.block_size)
+            self.desc.source, self.desc.qr.block_size)
         blocks = itertools.chain(metadata_blocks, file_blocks)
 
         for index, block in enumerate(blocks):

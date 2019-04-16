@@ -10,7 +10,7 @@ from . qr.writer import Writer
 
 def metadata(desc, writer=None):
     writer = writer or Writer()
-    stat = os.stat(desc.filename)
+    stat = os.stat(desc.source)
     block_count, rem = divmod(stat.st_size, writer.block_size)
     block_count += bool(rem)
 
@@ -25,8 +25,8 @@ def metadata(desc, writer=None):
                   'size': writer.chunk_size},
         'dimensions': desc.dimensions,
         'file_bytes': stat.st_size,
-        'file_name': pathlib.Path(desc.filename).name,
-        'sha256': hasher.hash_file(desc.filename).hexdigest(),
+        'file_name': pathlib.Path(desc.source).name,
+        'sha256': hasher.hash_file(desc.source).hexdigest(),
         'timestamp': str(datetime.datetime.utcfromtimestamp(stat.st_mtime)),
     }
 
