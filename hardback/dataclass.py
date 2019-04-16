@@ -1,6 +1,6 @@
 """Contains data classes that specify how a book is put together"""
 
-from typing import List, Tuple
+from typing import List
 from attr import dataclass, Factory
 from .qr.writer import Writer
 
@@ -18,7 +18,7 @@ class Book:
     title: str = ''
     cover: str = ''
     language: str = 'en'
-    authors: Tuple[str] = ()  # type: ignore
+    authors: List[str] = Factory(list)
 
 
 @dataclass(slots=True)
