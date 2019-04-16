@@ -1,13 +1,13 @@
 import attr
 
 
-def unserialize(data, item):
-    """Unserialize from JSON-like data to a dataclass (dicts, strings, etc)"""
+def unserialize(data, output):
+    """Unserialize from JSON-like data (dicts, strings, etc) to a dataclass"""
     try:
-        fields = attr.fields_dict(item.__class__)
+        fields = attr.fields_dict(output.__class__)
     except:
         try:
-            return type(item)(data)
+            return type(output)(data)
         except:
             return data
 
@@ -16,10 +16,10 @@ def unserialize(data, item):
         raise ValueError('Do not understand fields:', *unknown)
 
     for k, v in data.items():
-        subitem = getattr(item, k)
-        setattr(item, k, unserialize(v, subitem))
+        subitem = getattr(output, k)
+        setattr(output, k, unserialize(v, subitem))
 
-    return item
+    return output
 
 
 def serialize(item):
