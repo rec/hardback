@@ -1,9 +1,8 @@
 import png, yaml
 from ebooklib import epub
 from pathlib import Path
-from . import (
-    chunk_writer, chunk_sequence, create_epub, dataclass, elapsed_bar,
-    metadata, serialize)
+from . import chunk_writer, chunk_sequence, create_epub, elapsed_bar, metadata
+from . data import dataclass, serialize
 from . qr import qr_table
 
 

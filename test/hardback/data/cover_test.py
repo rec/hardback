@@ -1,5 +1,5 @@
 import unittest
-from hardback.cover import Cover, Font
+from hardback.data.cover import Cover, Font
 from pathlib import Path
 from PIL import Image
 from test.hardback import skip_tests

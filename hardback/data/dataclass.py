@@ -1,6 +1,6 @@
 """Contains data classes that specify how a book is put together"""
 
-from .qr.writer import Writer
+from ..qr.writer import Writer
 from attr import dataclass, Factory
 from typing import List
 
