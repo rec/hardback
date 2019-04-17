@@ -5,13 +5,11 @@ representing metadata about the file.
 
 import datetime, os, pathlib
 from . import chunk_sequence, hasher
-from . qr.writer import Writer
 
 
-def metadata(desc, writer=None):
-    writer = writer or Writer()
+def metadata(desc):
     stat = os.stat(desc.source)
-    block_count, rem = divmod(stat.st_size, writer.block_size)
+    block_count, rem = divmod(stat.st_size, desc.qr.block_size)
     block_count += bool(rem)
 
     c, r = desc.dimensions
@@ -20,9 +18,9 @@ def metadata(desc, writer=None):
 
     return {
         'block': {'count': block_count,
-                  'size': writer.block_size},
+                  'size': desc.qr.block_size},
         'chunk': {'count': chunk_count,
-                  'size': writer.chunk_size},
+                  'size': desc.qr.chunk_size},
         'dimensions': desc.dimensions,
         'file_bytes': stat.st_size,
         'file_name': pathlib.Path(desc.source).name,
@@ -47,9 +45,3 @@ sha256: "\\
   {s2}\\
 "
 """
-
-
-if __name__ == '__main__':
-    import json, sys
-
-    print(*(json.dumps(metadata(i)) for i in sys.argv[1:]), end='\n')
