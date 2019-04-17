@@ -1,4 +1,4 @@
-from hardback import create_epub
+from hardback.book import create_epub
 from pyfakefs.fake_filesystem_unittest import TestCase as FakeTestCase
 
 

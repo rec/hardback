@@ -1,8 +1,8 @@
 from pathlib import Path
 from ebooklib import epub
-from .data import dataclass
+from ..data import dataclass
 
-CSS_DIR = Path(__file__).parents[1] / 'css'
+CSS_DIR = Path(__file__).parents[2] / 'css'
 
 
 def create_epub(desc, chapters):
