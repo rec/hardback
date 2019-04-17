@@ -1,5 +1,5 @@
 import itertools, math, os, yaml
-from . import hasher
+from .util import hasher
 
 
 class ChunkWriter:

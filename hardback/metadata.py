@@ -4,7 +4,7 @@ representing metadata about the file.
 """
 
 import datetime, os, pathlib
-from . import chunk_sequence, hasher
+from .util import chunk_sequence, hasher
 
 
 def metadata(desc):

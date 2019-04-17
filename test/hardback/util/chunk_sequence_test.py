@@ -1,5 +1,5 @@
 import unittest
-from hardback import chunk_sequence
+from hardback.util import chunk_sequence
 
 
 class ChunkSequence(unittest.TestCase):

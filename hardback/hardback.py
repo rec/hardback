@@ -1,9 +1,10 @@
 import png, yaml
 from ebooklib import epub
 from pathlib import Path
-from . import chunk_writer, chunk_sequence, create_epub, elapsed_bar, metadata
+from . import chunk_writer, create_epub, metadata
 from . data import dataclass, serialize
 from . qr import qr_table
+from . util import chunk_sequence, elapsed_bar
 
 
 class Hardback:
