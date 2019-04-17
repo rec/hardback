@@ -39,24 +39,37 @@ class Cover:
     def render(self):
         image = Image.new('RGB', self.size, 'white')
         draw = ImageDraw.Draw(image)
-        y = self.margin[1]
+        items = []
 
         if self.title:
             font = self.font.create()
-            w, h = font.getsize(self.title)
-            x = (self.size[0] - w) // 2
-            y = self.margin[1]
-            draw.text((x, y), text=self.title, font=font, fill='black')
-            y += self.margin[1] + h
+            width, height = font.getsize(self.title)
+            x = (self.size[0] - width) // 2
+
+            def run(y):
+                draw.text((x, y), text=self.title, font=font, fill='black')
+
+            items.append((run, height))
 
         if self.image:
             cimage = Image.open(self.image)
-            isize = (self.size[0] - 2 * self.margin[0],
-                     self.size[1] - (y + self.margin[1]))
-            ratio = min(x / y for (x, y) in zip(isize, cimage.size))
+            ratio = (self.size[0] - 2 * self.margin[0]) / cimage.size[0]
             new_size = [round(ratio * i) for i in cimage.size]
             cimage = cimage.resize(new_size, Image.BOX)
-            image.paste(cimage, (self.margin[0], y))
+
+            def run(y):
+                image.paste(cimage, (self.margin[0], y))
+
+            items.append((run, new_size[1]))
+
+        if items:
+            remains = self.size[1] - sum(height for run, height in items)
+            spacing = int(remains / (len(items) + 1))
+            y = spacing
+            for run, height in items:
+                run(y)
+                y += height + spacing
+
         return image
 
 
