@@ -1,7 +1,7 @@
 import png, yaml
 from ebooklib import epub
 from pathlib import Path
-from . import chunk_writer, create_epub, metadata
+from . import chapter1, chunk_writer, create_epub, metadata
 from .. data import dataclass, serialize
 from .. qr import qr_table
 from .. util import chunk_sequence, elapsed_bar
@@ -28,17 +28,9 @@ class Hardback:
         self.book.add_desc(desc.book)
 
     def write(self):
-        self.book.add_chapters([self._chapter1(), self._chapter2()])
+        self.book.add_chapters([chapter1.chapter1(self), self._chapter2()])
         self.book.write(self.desc.outfile, **self.desc.options)
         self.bar.finish()
-
-    def _chapter1(self):
-        item = epub.EpubHtml(
-            title='Metadata',
-            file_name='chapter1.xhtml',
-            content=_METADATA_PAGE % metadata.format(**self.metadata))
-        item.add_item(self.book.default_css)
-        return item
 
     def _chapter2(self):
         c, r = self.desc.dimensions
@@ -73,10 +65,6 @@ class Hardback:
 
 _SUFFIXES = '.jpeg', '.jpg', '.png'
 _EMPTY_PNG = Path('empty.png')
-
-_METADATA_PAGE = """<h2>Metadata</h2>
-<pre>%s
-</pre>"""
 
 
 def _copy_to_empty_image(source, target):
