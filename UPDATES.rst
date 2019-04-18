@@ -7,7 +7,7 @@ First light
 
 I've been generating really quite nice books in the epub format for several
 days now - here's a
-`very little one <https://raw.githubusercontent.com/rec/hardback/master/laser.epub>`_
+`very little one <https://raw.githubusercontent.com/rec/hardback/master/images/laser.epub>`_
 where the QR codes contain the data for the image on the front cover.
 
 There's quite a bit more I want to do in terms of flexibility - I have it
