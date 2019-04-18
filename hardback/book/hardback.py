@@ -1,6 +1,6 @@
 import yaml
 from pathlib import Path
-from . import chapter1, chapter2, chunk_writer, create_epub, metadata
+from . import create_epub, metadata, metadata_chapter, qr_chapter
 from .. data import dataclass, serialize
 from .. util import elapsed_bar
 
@@ -19,7 +19,6 @@ class Hardback:
         desc.book.title = desc.book.title or p.name
 
         self.metadata = metadata.metadata(desc)
-        self.writer = chunk_writer.ChunkWriter(desc, self.metadata)
         self.bar = elapsed_bar.ElapsedBar(
             'Writing',
             max=self.metadata['block']['count'],
@@ -28,10 +27,14 @@ class Hardback:
         self.book.add_desc(desc.book)
 
     def write(self):
-        self.book.add_chapters([chapter1.chapter1(self),
-                                chapter2.chapter2(self)])
         self.book.write(self.desc.outfile, **self.desc.options)
         self.bar.finish()
+
+    def add_chapters(self):
+        self.book.add_chapters([
+            metadata_chapter.chapter(self),
+            qr_chapter.chapter(self)])
+        self.write()
 
 
 def hardback(files):
@@ -51,7 +54,7 @@ def hardback(files):
         desc.source = source[0]
 
     print(yaml.dump(serialize.serialize(desc)))
-    Hardback(desc).write()
+    Hardback(desc).add_chapters()
 
 
 _DATA_SUFFIXES = '.json', '.yml'

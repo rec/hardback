@@ -1,15 +1,18 @@
 import png
 from ebooklib import epub
 from pathlib import Path
+from . import chunk_writer
 from .. qr import qr_table
 from .. util import chunk_sequence
 
 _EMPTY_PNG = Path('empty.png')
 
 
-def chapter2(hardback):
+def chapter(hardback):
+    writer = chunk_writer.ChunkWriter(hardback.desc, hardback.metadata)
+
     def qr_code_images():
-        chunks = hardback.writer.write_chunks()
+        chunks = writer.write_chunks()
         for block_count, f in enumerate(chunks):
             f = Path(f)
             add_image_item(f)
