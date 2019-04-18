@@ -1,10 +1,10 @@
-import png, yaml
-from ebooklib import epub
+import yaml
 from pathlib import Path
-from . import chapter1, chunk_writer, create_epub, metadata
+from . import chapter1, chapter2, chunk_writer, create_epub, metadata
 from .. data import dataclass, serialize
-from .. qr import qr_table
-from .. util import chunk_sequence, elapsed_bar
+from .. util import elapsed_bar
+
+_SUFFIXES = '.jpeg', '.jpg', '.png'
 
 
 class Hardback:
@@ -28,54 +28,10 @@ class Hardback:
         self.book.add_desc(desc.book)
 
     def write(self):
-        self.book.add_chapters([chapter1.chapter1(self), self._chapter2()])
+        self.book.add_chapters([chapter1.chapter1(self),
+                                chapter2.chapter2(self)])
         self.book.write(self.desc.outfile, **self.desc.options)
         self.bar.finish()
-
-    def _chapter2(self):
-        c, r = self.desc.dimensions
-        images = self._qr_code_images()
-        chunks = chunk_sequence.chunk_sequence(images, c, r, _EMPTY_PNG)
-        table = qr_table.qr_table(chunks, c, r)
-
-        return epub.EpubHtml(
-            title=self.desc.source,
-            file_name='chapter2.xhtml',
-            content=table)
-
-    def _qr_code_images(self):
-        def add_image_item(path):
-            result = path.read_bytes()
-            item = epub.EpubItem(file_name=path.name, content=result)
-            self.book.add_item(item)
-
-        chunks = self.writer.write_chunks()
-        for self.block_count, f in enumerate(chunks):
-            f = Path(f)
-            add_image_item(f)
-            if not self.block_count:
-                _copy_to_empty_image(f, _EMPTY_PNG)
-                add_image_item(_EMPTY_PNG)
-                self.desc.remove_image_files and _EMPTY_PNG.unlink()
-
-            self.desc.remove_image_files and f.unlink()
-            self.bar.next_item(f.name)
-            yield f.name
-
-
-_SUFFIXES = '.jpeg', '.jpg', '.png'
-_EMPTY_PNG = Path('empty.png')
-
-
-def _copy_to_empty_image(source, target):
-    width, height, pixels, options = png.Reader(str(source)).read()
-
-    pixels = list(pixels)
-    for p in pixels:
-        p[:] = [1 for i in p]
-
-    with open(target, 'wb') as fp:
-        png.Writer(**options).write(fp, pixels)
 
 
 def hardback(files):

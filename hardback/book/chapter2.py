@@ -1,0 +1,50 @@
+import png
+from ebooklib import epub
+from pathlib import Path
+from .. qr import qr_table
+from .. util import chunk_sequence
+
+_EMPTY_PNG = Path('empty.png')
+
+
+def chapter2(hardback):
+    c, r = hardback.desc.dimensions
+    images = _qr_code_images(hardback)
+    chunks = chunk_sequence.chunk_sequence(images, c, r, _EMPTY_PNG)
+    table = qr_table.qr_table(chunks, c, r)
+
+    return epub.EpubHtml(
+        title=hardback.desc.source,
+        file_name='chapter2.xhtml',
+        content=table)
+
+
+def _qr_code_images(hardback):
+    def add_image_item(path):
+        result = path.read_bytes()
+        item = epub.EpubItem(file_name=path.name, content=result)
+        hardback.book.add_item(item)
+
+    chunks = hardback.writer.write_chunks()
+    for hardback.block_count, f in enumerate(chunks):
+        f = Path(f)
+        add_image_item(f)
+        if not hardback.block_count:
+            _copy_to_empty_image(f, _EMPTY_PNG)
+            add_image_item(_EMPTY_PNG)
+            hardback.desc.remove_image_files and _EMPTY_PNG.unlink()
+
+        hardback.desc.remove_image_files and f.unlink()
+        hardback.bar.next_item(f.name)
+        yield f.name
+
+
+def _copy_to_empty_image(source, target):
+    width, height, pixels, options = png.Reader(str(source)).read()
+
+    pixels = list(pixels)
+    for p in pixels:
+        p[:] = [1 for i in p]
+
+    with open(target, 'wb') as fp:
+        png.Writer(**options).write(fp, pixels)
