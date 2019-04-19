@@ -10,6 +10,8 @@ class QR:
     document_bytes = attr.ib(default=8)
     index_bytes = attr.ib(default=8)
 
+    SUFFIX = '.png'
+
     @property
     def max_chunk_size(self):
         return getattr(CODES[self.version - 1].binary, self.error)

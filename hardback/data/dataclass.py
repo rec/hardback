@@ -1,6 +1,6 @@
 """Contains data classes that specify how a book is put together"""
 
-from .. qr.writer import Writer
+from .. qr.qr import QR
 from attr import dataclass, Factory
 from typing import List
 
@@ -27,7 +27,7 @@ class Hardback:
     book: Book = Factory(Book)
     dimensions: List[int] = Factory(lambda: [5, 7])
     outfile: str = ''
-    qr: Writer = Factory(Writer)
+    qr: QR = Factory(QR)
 
     options: dict = Factory(dict)
     progress_bar: bool = True

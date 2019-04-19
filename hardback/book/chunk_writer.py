@@ -1,5 +1,6 @@
 import itertools, math, os, yaml
 from .. util import hasher
+from .. qr.write import write
 
 
 class ChunkWriter:
@@ -21,5 +22,5 @@ class ChunkWriter:
         blocks = itertools.chain(metadata_blocks, file_blocks)
 
         for index, block in enumerate(blocks):
-            yield self.desc.qr.write(
-                self.file_format % index, index, document, block)
+            yield write(
+                self.desc.qr, self.file_format % index, index, document, block)

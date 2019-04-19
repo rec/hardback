@@ -3,6 +3,7 @@ from pathlib import Path
 from . import create_epub, metadata, metadata_chapter, qr_chapter
 from .. data import dataclass, serialize
 from .. util import elapsed_bar
+from .. qr import fill
 
 _SUFFIXES = '.jpeg', '.jpg', '.png'
 
@@ -17,6 +18,7 @@ class Hardback:
         desc.book.cover = desc.book.cover or (p.suffix in _SUFFIXES) and p
         desc.outfile = desc.outfile or p.stem + '.epub'
         desc.book.title = desc.book.title or p.name
+        fill.fill(desc.qr)
 
         self.metadata = metadata.metadata(desc)
         self.bar = elapsed_bar.ElapsedBar(
