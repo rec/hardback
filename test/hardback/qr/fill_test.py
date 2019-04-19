@@ -1,6 +1,8 @@
 import copy, unittest
 from hardback.qr import fill
 from hardback.qr.qr import QR
+from hardback.qr.constants import Default
+DEFAULT = QR(Default.version, Default.error, Default.block_size)
 
 
 def filler(qr):
@@ -15,8 +17,8 @@ def fill_from(**kwds):
 
 class FillTest(unittest.TestCase):
     def test_simple(self):
-        self.assertEqual(filler(QR()), fill.DEFAULT)
-        self.assertEqual(filler(fill.DEFAULT), fill.DEFAULT)
+        self.assertEqual(filler(QR()), DEFAULT)
+        self.assertEqual(filler(DEFAULT), DEFAULT)
 
     def test_all_filled(self):
         qr = QR(version=30, error='M', block_size=200)

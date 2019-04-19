@@ -1,5 +1,5 @@
 import attr
-from . codes import CODES
+from . import codes, constants
 
 
 @attr.s(slots=True)
@@ -14,7 +14,7 @@ class QR:
 
     @property
     def max_chunk_size(self):
-        return getattr(CODES[self.version - 1].binary, self.error)
+        return getattr(codes.CODES[self.version - 1].binary, self.error)
 
     @property
     def chunk_size(self):
@@ -27,16 +27,10 @@ class QR:
 
     @error.validator
     def check_error(self, _, error):
-        if error and error not in ERRORS:
+        if error and error not in constants.ERRORS:
             raise ValueError
 
     @version.validator
     def check_version(self, _, version):
-        if version and not (1 <= version <= MAX_VERSION):
+        if version and not (1 <= version <= constants.MAX_VERSION):
             raise ValueError
-
-
-ERRORS = 'LMQH'
-MAX_VERSION = 40
-DEFAULT = QR(36, 'H', 1024)
-DEFAULT.check_chunk_size()

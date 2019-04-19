@@ -1,4 +1,4 @@
-from . qr import DEFAULT, ERRORS, MAX_VERSION
+from . constants import ERRORS, MAX_VERSION, Default
 
 
 def fill(qr):
@@ -11,7 +11,7 @@ def fill(qr):
 
     def fill_version():
         err = qr.error
-        qr.error = qr.error or DEFAULT.error
+        qr.error = qr.error or Default.error
 
         for qr.version in range(1, MAX_VERSION):
             if qr.chunk_size <= qr.max_chunk_size:
@@ -19,16 +19,16 @@ def fill(qr):
         qr.error = err
 
     if not (qr.version or qr.error or qr.block_size):
-        qr.version = DEFAULT.version
-        qr.error = DEFAULT.error
-        qr.block_size = DEFAULT.block_size
+        qr.version = Default.version
+        qr.error = Default.error
+        qr.block_size = Default.block_size
 
     if qr.version and qr.error and qr.block_size:
         qr.check_chunk_size()
 
     elif not qr.block_size:
-        qr.version = qr.version or DEFAULT.version
-        qr.error = qr.error or DEFAULT.error
+        qr.version = qr.version or Default.version
+        qr.error = qr.error or Default.error
         qr.block_size = qr.max_chunk_size - qr.chunk_size
 
     elif qr.version:
