@@ -23,7 +23,7 @@ class Book:
 
 @dataclass(slots=True)
 class Hardback:
-    source: str = ''
+    sources: List[str] = Factory(list)
     book: Book = Factory(Book)
     dimensions: List[int] = Factory(lambda: [5, 7])
     outfile: str = ''

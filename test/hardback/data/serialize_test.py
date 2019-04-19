@@ -36,7 +36,7 @@ class SerializeTest(unittest.TestCase):
 
     def test_hardback(self):
         p1 = Hardback()
-        p1.source = 'foo'
+        p1.sources = ['foo']
         p1.dimensions = [3, 3]
         p1.progress_bar = False
         p1.book.identifier = 'id'
