@@ -20,7 +20,7 @@ class Hardback:
         desc.book.title = desc.book.title or p.name
         fill.fill(desc.qr)
 
-        self.metadata = metadata.metadata(desc)
+        self.metadata = metadata.metadata(desc, desc.source)
         self.bar = elapsed_bar.ElapsedBar(
             'Writing',
             max=self.metadata['block']['count'],
@@ -34,8 +34,8 @@ class Hardback:
 
     def add_chapters(self):
         self.book.add_chapters([
-            metadata_chapter.chapter(self),
-            qr_chapter.chapter(self)])
+            metadata_chapter.chapter(self, self.metadata),
+            qr_chapter.chapter(self, self.desc.source, self.metadata)])
         self.write()
 
 

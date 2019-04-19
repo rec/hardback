@@ -7,8 +7,8 @@ import datetime, os, pathlib
 from .. util import chunk_sequence, hasher
 
 
-def metadata(desc):
-    stat = os.stat(desc.source)
+def metadata(desc, source):
+    stat = os.stat(source)
     block_count, rem = divmod(stat.st_size, desc.qr.block_size)
     block_count += bool(rem)
 
@@ -23,8 +23,8 @@ def metadata(desc):
                   'size': desc.qr.chunk_size},
         'dimensions': desc.dimensions,
         'file_bytes': stat.st_size,
-        'file_name': pathlib.Path(desc.source).name,
-        'sha256': hasher.hash_file(desc.source).hexdigest(),
+        'file_name': pathlib.Path(source).name,
+        'sha256': hasher.hash_file(source).hexdigest(),
         'timestamp': str(datetime.datetime.utcfromtimestamp(stat.st_mtime)),
     }
 

@@ -8,11 +8,11 @@ from .. util import chunk_sequence
 _EMPTY_PNG = Path('empty.png')
 
 
-def chapter(hardback):
-    writer = chunk_writer.ChunkWriter(hardback.desc, hardback.metadata)
+def chapter(hardback, source, metadata):
+    writer = chunk_writer.ChunkWriter(hardback.desc, metadata)
 
     def qr_code_images():
-        chunks = writer.write_chunks()
+        chunks = writer.write_chunks(source)
         for block_count, f in enumerate(chunks):
             f = Path(f)
             add_image_item(f)
@@ -46,6 +46,4 @@ def chapter(hardback):
     table = qr_table.qr_table(chunks, c, r)
 
     return epub.EpubHtml(
-        title=hardback.desc.source,
-        file_name='chapter2.xhtml',
-        content=table)
+        title=source, file_name='chapter2.xhtml', content=table)

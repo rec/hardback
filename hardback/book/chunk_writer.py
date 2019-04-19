@@ -8,7 +8,7 @@ class ChunkWriter:
         self.desc = desc
         self.metadata = metadata
 
-    def write_chunks(self):
+    def write_chunks(self, source):
         digits = math.ceil(math.log(self.metadata['block']['count'], 16))
         os.makedirs(self.desc.qr_image_dir, exist_ok=True)
         suffix = self.desc.qr.SUFFIX
@@ -17,8 +17,7 @@ class ChunkWriter:
 
         document = bytes.fromhex(self.metadata['sha256'])
         metadata_blocks = (yaml.dump(self.metadata).encode(),)
-        file_blocks = hasher.file_blocks(
-            self.desc.source, self.desc.qr.block_size)
+        file_blocks = hasher.file_blocks(source, self.desc.qr.block_size)
         blocks = itertools.chain(metadata_blocks, file_blocks)
 
         for index, block in enumerate(blocks):

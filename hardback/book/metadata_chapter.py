@@ -1,15 +1,16 @@
 from ebooklib import epub
-from . import metadata
+from . metadata import format as metadata_format
+
 
 _METADATA_PAGE = """<h2>Metadata</h2>
 <pre>%s
 </pre>"""
 
 
-def chapter(hardback):
+def chapter(hardback, metadata):
     item = epub.EpubHtml(
         title='Metadata',
         file_name='metadata_chapter.xhtml',
-        content=_METADATA_PAGE % metadata.format(**hardback.metadata))
+        content=_METADATA_PAGE % metadata_format(**metadata))
     item.add_item(hardback.book.default_css)
     return item
