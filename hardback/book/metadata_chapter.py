@@ -7,10 +7,10 @@ _METADATA_PAGE = """<h2>Metadata</h2>
 </pre>"""
 
 
-def chapter(hardback, metadata):
+def chapter(hardback, index, metadata):
     item = epub.EpubHtml(
-        title='Metadata',
-        file_name='metadata_chapter.xhtml',
-        content=_METADATA_PAGE % metadata_format(**metadata))
+        title=f'Metadata {index + 1}',
+        file_name=f'metadata_chapter_{index}.xhtml',
+        content=_METADATA_PAGE % metadata_format(index=index, **metadata))
     item.add_item(hardback.book.default_css)
     return item

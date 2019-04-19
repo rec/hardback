@@ -10,21 +10,27 @@ _SUFFIXES = '.jpeg', '.jpg', '.png'
 
 class Hardback:
     def __init__(self, desc):
-        if not desc.source:
+        if not desc.sources:
             raise ValueError('No filename')
         self.desc = desc
 
-        p = Path(desc.source)
-        desc.book.cover = desc.book.cover or (p.suffix in _SUFFIXES) and p
-        desc.outfile = desc.outfile or p.stem + '.epub'
-        desc.book.title = desc.book.title or p.name
+        if not desc.book.cover:
+            p = [i for i in desc.sources if Path(i).suffix in _SUFFIXES]
+            desc.book.cover = p and p[0]
+
+        head = Path(desc.sources[0])
+        desc.outfile = desc.outfile or head.stem + '.epub'
+        if not desc.book.title:
+            desc.book.title = head.name
+            if len(desc.sources) > 1:
+                desc.book.title += ', ...'
+
         fill.fill(desc.qr)
 
-        self.metadata = metadata.metadata(desc, desc.source)
+        self.metadatas = [metadata.metadata(desc, s) for s in desc.sources]
+        block_count = sum(m['block']['count'] for m in self.metadatas)
         self.bar = elapsed_bar.ElapsedBar(
-            'Writing',
-            max=self.metadata['block']['count'],
-            enable=desc.progress_bar)
+            'Writing', max=block_count, enable=desc.progress_bar)
         self.book = create_epub.EpubBook()
         self.book.add_desc(desc.book)
 
@@ -33,27 +39,24 @@ class Hardback:
         self.bar.finish()
 
     def add_chapters(self):
-        self.book.add_chapters([
-            metadata_chapter.chapter(self, self.metadata),
-            qr_chapter.chapter(self, self.desc.source, self.metadata)])
+        chapters = []
+        sm = zip(self.desc.sources, self.metadatas)
+        for index, (source, md) in enumerate(sm):
+            chapters.extend([
+                metadata_chapter.chapter(self, index, md),
+                qr_chapter.chapter(self, source, index, md)])
+
+        self.book.add_chapters(chapters)
         self.write()
 
 
 def hardback(files):
-    is_data = [], []
-    for f in files:
-        is_data[Path(f).suffix in _DATA_SUFFIXES].append(f)
-
-    source, data = is_data
-    if len(source) > 1:
-        raise ValueError('We cannot yet write books with more than one source')
-
     desc = dataclass.Hardback()
-    for d in data:
-        serialize.unserialize(d, desc)
-
-    if source:
-        desc.source = source[0]
+    for f in files:
+        if Path(f).suffix in _DATA_SUFFIXES:
+            serialize.unserialize(f, desc)
+        else:
+            desc.sources.append(f)
 
     print(yaml.dump(serialize.serialize(desc)))
     Hardback(desc).add_chapters()
