@@ -1,6 +1,6 @@
 import yaml
 from pathlib import Path
-from . import create_epub, metadata, sections
+from . import epub_book, metadata, sections
 from .. data import dataclass, serialize
 from .. util import elapsed_bar
 from .. qr import fill
@@ -31,7 +31,7 @@ class Hardback:
         block_count = sum(m['block']['count'] for m in self.metadatas)
         self.bar = elapsed_bar.ElapsedBar(
             'Writing', max=block_count, enable=desc.progress_bar)
-        self.book = create_epub.EpubBook()
+        self.book = epub_book.EpubBook()
         self.book.add_desc(desc.book)
 
     def write(self):

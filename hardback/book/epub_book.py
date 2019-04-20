@@ -5,7 +5,7 @@ from .. data import dataclass
 CSS_DIR = Path(__file__).parents[2] / 'css'
 
 
-def create_epub(desc, chapters):
+def epub_book(desc, chapters):
     book = EpubBook()
     book.add_desc(desc)
 
@@ -45,8 +45,8 @@ class EpubBook(epub.EpubBook):
         epub.write_epub(outfile, self, options)
 
 
-def write_epub(desc, chapters, outfile, **options):
-    book = create_epub(desc, chapters)
+def write_epub_book(desc, chapters, outfile, **options):
+    book = epub_book(desc, chapters)
     book.write(outfile, **options)
 
 
@@ -69,7 +69,7 @@ def test_write():
         dataclass.Chapter('About this book', 'about.xhtml', ABOUT_THIS_BOOK),
     )
 
-    write_epub(data, chapters, 'test.epub')
+    write_epub_book(data, chapters, 'test.epub')
 
 
 INTRODUCTION = """

@@ -1,11 +1,11 @@
-from hardback.book import create_epub
+from hardback.book import epub_book
 from pyfakefs.fake_filesystem_unittest import TestCase as FakeTestCase
 
 
 class CreateEpubTest(FakeTestCase):
     def setUp(self):
         self.setUpPyfakefs()
-        self.fs.add_real_directory(create_epub.CSS_DIR)
+        self.fs.add_real_directory(epub_book.CSS_DIR)
 
     def test_simple(self):
-        create_epub.test_write()
+        epub_book.test_write()
