@@ -4,12 +4,14 @@ import itertools
 def table(entries, columns, rows, fillvalue=''):
     def one_table(entries):
         assert len(entries) == columns * rows
+        width = round(100 / columns, 2)
         yield '<table>'
         for y in range(rows):
             yield '  <tr>'
             for x in range(columns):
                 entry = entries[x + y * columns]
-                yield f'    <td> {entry} </td>'
+                style = '' if y else f' style="width:{width}%;"'
+                yield f'    <td{style}> {entry} </td>'
             yield '  </tr>'
 
         yield '</table>'
