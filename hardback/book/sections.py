@@ -1,14 +1,15 @@
-import png
-from ebooklib import epub
-from pathlib import Path
 from . chunk_writer import write_chunks
+from . metadata import format as metadata_format
 from .. qr import qr_table
 from .. util import chunk_sequence
+from ebooklib import epub
+from pathlib import Path
+import png
 
 _EMPTY_PNG = Path('empty.png')
 
 
-def chapter(hardback, source, index, metadata):
+def qr(hardback, source, index, metadata):
     def qr_code_images():
         chunks = write_chunks(hardback.desc, metadata, source, index)
         for block_count, f in enumerate(chunks):
@@ -45,3 +46,17 @@ def chapter(hardback, source, index, metadata):
 
     return epub.EpubHtml(
         title=source, file_name=f'qr-codes-{index}.xhtml', content=table)
+
+
+def metadata(hardback, index, metadata):
+    item = epub.EpubHtml(
+        title=f'Metadata {index + 1}',
+        file_name=f'metadata_chapter_{index}.xhtml',
+        content=_METADATA_PAGE % metadata_format(index=index, **metadata))
+    item.add_item(hardback.book.default_css)
+    return item
+
+
+_METADATA_PAGE = """<h2>Metadata</h2>
+<pre>%s
+</pre>"""

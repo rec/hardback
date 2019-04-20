@@ -1,6 +1,6 @@
 import yaml
 from pathlib import Path
-from . import create_epub, metadata, metadata_chapter, qr_chapter
+from . import create_epub, metadata, sections
 from .. data import dataclass, serialize
 from .. util import elapsed_bar
 from .. qr import fill
@@ -43,8 +43,8 @@ class Hardback:
         sm = zip(self.desc.sources, self.metadatas)
         for index, (source, md) in enumerate(sm):
             chapters.extend([
-                metadata_chapter.chapter(self, index, md),
-                qr_chapter.chapter(self, source, index, md)])
+                sections.metadata(self, index, md),
+                sections.qr(self, source, index, md)])
 
         self.book.add_chapters(chapters)
         self.write()
