@@ -1,16 +1,7 @@
 import hashlib
+from . import files
+
 HASHER = hashlib.sha256
-BLOCK_SIZE = 4096
-
-
-def file_blocks(filename, block_size=BLOCK_SIZE):
-    with open(filename, 'rb') as fp:
-        while True:
-            buf = fp.read(block_size)
-            if buf:
-                yield buf
-            else:
-                return
 
 
 def hash_digest(items, hasher=HASHER):
@@ -20,8 +11,9 @@ def hash_digest(items, hasher=HASHER):
     return h
 
 
-def hash_file(filename, block_size=BLOCK_SIZE, hasher=HASHER):
-    return hash_digest(file_blocks(filename, block_size), hasher)
+def hash_file(filename, block_size=files.BLOCK_SIZE, hasher=HASHER):
+    blocks = files.file_blocks(filename, block_size)
+    return hash_digest(blocks, hasher)
 
 
 if __name__ == '__main__':
