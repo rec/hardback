@@ -1,5 +1,5 @@
 from pathlib import Path
-from ebooklib import epub
+from ebooklib import epub, utils
 from .. data import dataclass
 
 CSS_DIR = Path(__file__).parents[2] / 'css'
@@ -15,6 +15,8 @@ def epub_book(desc, chapters):
 
 
 class EpubBook(epub.EpubBook):
+    page_number = 0
+
     def add_desc(self, book):
         self.set_identifier(book.identifier)
         self.set_title(book.title)
@@ -40,6 +42,11 @@ class EpubBook(epub.EpubBook):
     def add_items(self, *items):
         for i in items:
             self.add_item(i)
+
+    def add_pagebreak(self):
+        self.page_number += 1
+        pn = str(self.page_number)
+        return utils.create_pagebreak(pn, pn)
 
     def write(self, outfile, **options):
         epub.write_epub(outfile, self, options)
