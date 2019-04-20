@@ -2,9 +2,9 @@ import unittest
 from hardback.qr.qr_table import qr_table
 
 
-def join_qr(file_count, columns, rows):
+def join_qr(file_count, columns, rows, fillvalue=''):
     files = ('x/%d.png' % i for i in range(file_count))
-    return qr_table(files, columns, rows)
+    return qr_table(files, columns, rows, fillvalue)
 
 
 class QrTableTest(unittest.TestCase):
@@ -14,7 +14,7 @@ class QrTableTest(unittest.TestCase):
         self.assertEqual(join_qr(0, 1, 1), '')
 
     def test_small(self):
-        self.assertEqual(join_qr(5, 2, 3), SMALL_RESULT)
+        self.assertEqual(join_qr(5, 2, 3, fillvalue='fill'), SMALL_RESULT)
 
     def test_big(self):
         self.assertEqual(join_qr(12, 2, 3), BIG_RESULT)
@@ -32,6 +32,7 @@ SMALL_RESULT = """\
   </tr>
   <tr>
     <td> <img src="x/4.png"/> </td>
+    <td> fill </td>
   </tr>
 </table>\
 """
