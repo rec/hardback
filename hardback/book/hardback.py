@@ -1,4 +1,4 @@
-import yaml
+import attr, yaml
 from pathlib import Path
 from . import epub_book, metadata, sections
 from .. data import dataclass, serialize
@@ -34,20 +34,39 @@ class Hardback:
         self.book = epub_book.EpubBook()
         self.book.add_desc(desc.book)
 
+    def __iter__(self):
+        return HardbackCursor(self)
+
     def write(self):
         self.book.write(self.desc.outfile, **self.desc.options)
         self.bar.finish()
 
     def add_chapters(self):
         chapters = []
-        sm = zip(self.desc.sources, self.metadatas)
-        for index, (source, md) in enumerate(sm):
-            chapters.extend([
-                sections.metadata(self, index, md),
-                sections.qr(self, source, index, md)])
-
+        for hc in self:
+            chapters.extend([sections.metadata(hc), sections.qr(hc)])
         self.book.add_chapters(chapters)
         self.write()
+
+
+@attr.dataclass
+class HardbackCursor:
+    hardback: Hardback = attr.Factory(Hardback)
+    index: int = -1
+
+    def __next__(self):
+        self.index += 1
+        if self.index >= len(self.hardback.desc.sources):
+            raise StopIteration
+        return self
+
+    @property
+    def source(self):
+        return self.hardback.desc.sources[self.index]
+
+    @property
+    def metadata(self):
+        return self.hardback.metadatas[self.index]
 
 
 def hardback(files):
