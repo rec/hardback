@@ -1,17 +1,7 @@
 from pathlib import Path
 from ebooklib import epub, utils
-from .. data import dataclass
 
 CSS_DIR = Path(__file__).parents[2] / 'css'
-
-
-def epub_book(desc, chapters):
-    book = EpubBook()
-    book.add_desc(desc)
-
-    chapters = [epub.EpubHtml(**c.__dict__) for c in chapters]
-    book.add_chapters(chapters)
-    return book
 
 
 class EpubBook(epub.EpubBook):
@@ -52,50 +42,9 @@ class EpubBook(epub.EpubBook):
         epub.write_epub(outfile, self, options)
 
 
-def write_epub_book(desc, chapters, outfile, **options):
-    book = epub_book(desc, chapters)
-    book.write(outfile, **options)
-
-
 def make_css(name):
     return epub.EpubItem(
         uid=f'style_{name}',
         file_name=f'style/{name}.css',
         media_type='text/css',
         content=open(CSS_DIR / f'{name}.css').read())
-
-
-def test_write():
-    data = dataclass.Book(
-        identifier='Identifier',
-        title='Title',
-        authors=('Tom Ritchford',))
-
-    chapters = (
-        dataclass.Chapter('Introduction', 'introduction.xhtml', INTRODUCTION),
-        dataclass.Chapter('About this book', 'about.xhtml', ABOUT_THIS_BOOK),
-    )
-
-    write_epub_book(data, chapters, 'test.epub')
-
-
-INTRODUCTION = """
-<html><head></head>
-<body><h1>Introduction</h1>
-<p>Introductary paragraph where I explain what is happening.
-</p></body></html>
-"""
-
-ABOUT_THIS_BOOK = """
-<h1>About this book</h1>
-<p>Hello, this is my book.</p>
-"""
-
-PROPERTIES = '\
-rendition:layout-pre-paginated\
- rendition:orientation-landscape\
- rendition:spread-none'
-
-
-if __name__ == '__main__':
-    test_write()
