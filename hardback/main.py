@@ -14,10 +14,10 @@ def main(files):
         else:
             desc.sources.append(f)
 
-    print(yaml.dump(serialize.serialize(desc)))
-
     hb = hardback.Hardback(desc)
     chapters = []
+
+    print(yaml.dump(serialize.serialize(hb.desc)))
 
     for hc in cursor.HardbackCursor(hb):
         if NEW_CHAPTERS:
