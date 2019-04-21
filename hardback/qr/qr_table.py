@@ -10,9 +10,13 @@ def table(entries, columns, rows, fillvalue=''):
             yield '  <tr>'
             for x in range(columns):
                 entry = entries[x + y * columns]
+                if not entry:
+                    break
                 style = '' if y else f' style="width:{width}%;"'
                 yield f'    <td{style}> {entry} </td>'
             yield '  </tr>'
+            if not entry:
+                break
 
         yield '</table>'
 
