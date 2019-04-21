@@ -1,7 +1,7 @@
 import itertools
 
 
-def table(entries, columns, rows, fillvalue=''):
+def table(entries, columns, rows):
     def one_table(entries):
         assert len(entries) == columns * rows
         width = round(100 / columns, 2)
@@ -10,17 +10,21 @@ def table(entries, columns, rows, fillvalue=''):
             yield '  <tr>'
             for x in range(columns):
                 entry = entries[x + y * columns]
+                if not entry:
+                    break
                 style = '' if y else f' style="width:{width}%;"'
                 yield f'    <td{style}> {entry} </td>'
             yield '  </tr>'
+            if not entry:
+                break
 
         yield '</table>'
 
     it = [iter(entries)] * (columns * rows)
-    for group in itertools.zip_longest(*it, fillvalue=fillvalue):
+    for group in itertools.zip_longest(*it):
         yield '\n'.join(one_table(group))
 
 
-def qr_table(files, columns, rows, fillvalue=''):
-    t = table((f'<img src="{f}"/>' for f in files), columns, rows, fillvalue)
+def qr_table(files, columns, rows):
+    t = table((f'<img src="{f}"/>' for f in files), columns, rows)
     return '\n'.join(t)
