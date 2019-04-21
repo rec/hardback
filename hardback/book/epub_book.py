@@ -36,7 +36,8 @@ class EpubBook(epub.EpubBook):
     def add_pagebreak(self):
         self.page_number += 1
         pn = str(self.page_number)
-        return utils.create_pagebreak(pn, pn)
+        # return utils.create_pagebreak(pn, pn)
+        return utils.create_pagebreak(pn, '')
 
     def write(self, outfile, **options):
         epub.write_epub(outfile, self, options)

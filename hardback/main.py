@@ -3,6 +3,7 @@ from . book import cursor, hardback, sections
 from . data import serialize, dataclass
 
 _DATA_SUFFIXES = '.json', '.yml'
+NEW_CHAPTERS = False
 
 
 def main(files):
@@ -19,7 +20,10 @@ def main(files):
     chapters = []
 
     for hc in cursor.HardbackCursor(hb):
-        chapters.extend([sections.metadata(hc), sections.qr(hc)])
+        if NEW_CHAPTERS:
+            chapters.append(sections.chapter(hc))
+        else:
+            chapters.extend([sections.metadata(hc), sections.qr(hc)])
 
     hb.book.add_chapters(chapters)
     hb.write()

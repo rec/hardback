@@ -6,7 +6,31 @@ from ebooklib import epub
 from pathlib import Path
 
 
+def chapter(hc):
+    name = Path(hc.source).name
+    return epub.EpubHtml(
+        title=f'Metadata {name}',
+        file_name=f'full_chapter_{hc.index}.xhtml',
+        content=metadata_html(hc) + qr_html(hc))
+
+
 def qr(hc):
+    return epub.EpubHtml(
+        title=hc.source,
+        file_name=f'qr-codes-{hc.index}.xhtml',
+        content=qr_html(hc))
+
+
+def metadata(hc):
+    item = epub.EpubHtml(
+        title=f'Metadata {hc.index + 1}',
+        file_name=f'metadata_chapter_{hc.index}.xhtml',
+        content=metadata_html(hc))
+    item.add_item(hc.hardback.book.default_css)
+    return item
+
+
+def qr_html(hc):
     def qr_code_images():
         chunks = write_chunks(hc)
         for block_count, f in enumerate(chunks):
@@ -24,20 +48,11 @@ def qr(hc):
     c, r = hc.hardback.desc.dimensions
     images = qr_code_images()
     chunks = chunk_sequence.chunk_sequence(images, c, r)
-    table = '\n'.join(qr_table.qr_table(chunks, c, r))
-
-    return epub.EpubHtml(
-        title=hc.source, file_name=f'qr-codes-{hc.index}.xhtml', content=table)
+    return '\n'.join(qr_table.qr_table(chunks, c, r))
 
 
-def metadata(hc):
-    content = _METADATA_PAGE % metadata_format(index=hc.index, **hc.metadata)
-    item = epub.EpubHtml(
-        title=f'Metadata {hc.index + 1}',
-        file_name=f'metadata_chapter_{hc.index}.xhtml',
-        content=content)
-    item.add_item(hc.hardback.book.default_css)
-    return item
+def metadata_html(hc):
+    return _METADATA_PAGE % metadata_format(index=hc.index, **hc.metadata)
 
 
 _METADATA_PAGE = """<h2>Metadata</h2>
