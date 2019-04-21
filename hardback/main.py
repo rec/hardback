@@ -16,11 +16,7 @@ def main(files):
     print(yaml.dump(serialize.serialize(desc)))
 
     hb = hardback.Hardback(desc)
-    chapters = []
-
-    for hc in cursor.HardbackCursor(hb):
-        chapters.extend([sections.metadata(hc), sections.qr(hc)])
-
+    chapters = [sections.chapter(hc) for hc in cursor.HardbackCursor(hb)]
     hb.book.add_chapters(chapters)
     hb.write()
 

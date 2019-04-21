@@ -17,10 +17,9 @@ def table(entries, columns, rows, fillvalue=''):
         yield '</table>'
 
     it = [iter(entries)] * (columns * rows)
-    for group in itertools.zip_longest(*it, fillvalue=fillvalue):
+    for group in itertools.zip_longest(*it):
         yield '\n'.join(one_table(group))
 
 
-def qr_table(files, columns, rows, fillvalue=''):
-    t = table((f'<img src="{f}"/>' for f in files), columns, rows, fillvalue)
-    return '\n'.join(t)
+def qr_table(files, columns, rows):
+    return table((f'<img src="{f}"/>' for f in files), columns, rows)
