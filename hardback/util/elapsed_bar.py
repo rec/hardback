@@ -3,8 +3,8 @@ from progress.bar import ChargingBar
 
 
 class ElapsedBar(ChargingBar):
-    def __init__(self, *args, enable=True, **kwds):
-        super().__init__(*args, **kwds)
+    def __init__(self, msg='Working', *args, enable=True, **kwds):
+        super().__init__(msg, *args, **kwds)
         self.__start_time = datetime.datetime.now()
         self.__index = 0
         self.__enable = enable
