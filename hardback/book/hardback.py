@@ -1,9 +1,7 @@
-import yaml
 from pathlib import Path
-from . import epub_book, metadata, sections
-from .. data import dataclass, serialize
-from .. util import elapsed_bar
+from . import epub_book, metadata
 from .. qr import fill
+from .. util import elapsed_bar
 
 _SUFFIXES = '.jpeg', '.jpg', '.png'
 
@@ -37,32 +35,3 @@ class Hardback:
     def write(self):
         self.book.write(self.desc.outfile, **self.desc.options)
         self.bar.finish()
-
-    def add_chapters(self):
-        from . cursor import HardbackCursor
-
-        chapters = []
-        for hc in HardbackCursor(self):
-            chapters.extend([sections.metadata(hc), sections.qr(hc)])
-        self.book.add_chapters(chapters)
-        self.write()
-
-
-def hardback(files):
-    desc = dataclass.Hardback()
-    for f in files:
-        if Path(f).suffix in _DATA_SUFFIXES:
-            serialize.unserialize(f, desc)
-        else:
-            desc.sources.append(f)
-
-    print(yaml.dump(serialize.serialize(desc)))
-    Hardback(desc).add_chapters()
-
-
-_DATA_SUFFIXES = '.json', '.yml'
-
-
-if __name__ == '__main__':
-    import sys
-    hardback(sys.argv[1:])
