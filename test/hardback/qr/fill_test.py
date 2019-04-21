@@ -7,7 +7,7 @@ DEFAULT = QR(Default.version, Default.error, Default.block_size)
 
 def filler(qr):
     qr = copy.deepcopy(qr)
-    fill.fill(qr)
+    fill.fill_qr(qr)
     return qr
 
 

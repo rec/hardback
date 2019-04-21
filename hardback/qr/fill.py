@@ -1,7 +1,7 @@
 from . constants import ERRORS, MAX_VERSION, Default
 
 
-def fill(qr):
+def fill_qr(qr):
     def fill_error():
         for qr.error in reversed(ERRORS):
             if qr.chunk_size <= qr.max_chunk_size:

@@ -25,7 +25,7 @@ class Hardback:
             if len(desc.sources) > 1:
                 desc.book.title += ', ...'
 
-        fill.fill(desc.qr)
+        fill.fill_qr(desc.qr)
 
         self.metadatas = [metadata.metadata(desc, s) for s in desc.sources]
         block_count = sum(m['block']['count'] for m in self.metadatas)
