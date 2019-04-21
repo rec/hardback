@@ -4,7 +4,7 @@ from hardback.qr.qr_table import qr_table
 
 def join_qr(file_count, columns, rows):
     files = ('x/%d.png' % i for i in range(file_count))
-    return qr_table(files, columns, rows)
+    return '\n'.join(qr_table(files, columns, rows))
 
 
 class QrTableTest(unittest.TestCase):

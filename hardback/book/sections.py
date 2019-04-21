@@ -24,7 +24,7 @@ def qr(hc):
     c, r = hc.hardback.desc.dimensions
     images = qr_code_images()
     chunks = chunk_sequence.chunk_sequence(images, c, r)
-    table = qr_table.qr_table(chunks, c, r)
+    table = '\n'.join(qr_table.qr_table(chunks, c, r))
 
     return epub.EpubHtml(
         title=hc.source, file_name=f'qr-codes-{hc.index}.xhtml', content=table)
