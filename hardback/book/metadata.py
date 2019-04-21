@@ -17,10 +17,8 @@ def metadata(desc, source):
     chunk_count = 1 + block_count + (block_count // metadata_every)
 
     return {
-        'block': {'count': block_count,
-                  'size': desc.qr.block_size},
-        'chunk': {'count': chunk_count,
-                  'size': desc.qr.chunk_size},
+        'block': {'count': block_count, 'size': desc.qr.block_size},
+        'chunk': {'count': chunk_count, 'size': desc.qr.chunk_size},
         'dimensions': desc.dimensions,
         'file_bytes': stat.st_size,
         'file_name': pathlib.Path(source).name,
