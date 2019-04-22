@@ -1,8 +1,26 @@
-from . import epub_book, metadata
+from . css import make_css
+from . import metadata
 from .. qr.fill import fill_qr
 from .. util import hasher
 from .. util.elapsed_bar import ElapsedBar
+from ebooklib import epub
 from pathlib import Path
+
+
+class EpubBook(epub.EpubBook):
+    def add_desc(self, book):
+        book.apply(self)
+        self.default_css = make_css('default')
+        self.add_item(self.default_css)
+
+    def add_items(self, *items):
+        for i in items:
+            self.add_item(i)
+
+    def write(self, outfile, **options):
+        self.add_items(epub.EpubNcx(), epub.EpubNav(), make_css('nav'))
+        self.spine = ['nav'] + self.toc
+        epub.write_epub(outfile, self, options)
 
 
 class Hardback:
@@ -26,7 +44,7 @@ class Hardback:
             desc.book.identifier = d.hexdigest()
 
         self.bar = ElapsedBar(max=total_blocks, enable=desc.progress_bar)
-        self.book = epub_book.EpubBook()
+        self.book = EpubBook()
         self.book.add_desc(desc.book)
 
     def write(self):

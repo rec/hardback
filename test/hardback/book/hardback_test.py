@@ -1,11 +1,11 @@
 from ebooklib import epub
-from hardback.book import css, epub_book
+from hardback.book import css, hardback
 from hardback.data.book import Book
 from hardback.data.dataclass import Chapter
 from pyfakefs.fake_filesystem_unittest import TestCase as FakeTestCase
 
 
-class CreateEpubTest(FakeTestCase):
+class HardbackrTest(FakeTestCase):
     def setUp(self):
         self.setUpPyfakefs()
         self.fs.add_real_directory(css.CSS_DIR)
@@ -16,7 +16,7 @@ class CreateEpubTest(FakeTestCase):
             title='Title',
             authors=('Tom Ritchford',))
 
-        book = epub_book.EpubBook()
+        book = hardback.EpubBook()
         book.add_desc(desc)
 
         book.toc[:] = [epub.EpubHtml(**c.__dict__) for c in CHAPTERS]
