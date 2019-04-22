@@ -15,18 +15,13 @@ def main(files):
             desc.sources.append(f)
 
     hb = hardback.Hardback(desc)
-    chapters = []
 
     print(yaml.dump(serialize.serialize(hb.desc)))
 
     for hc in cursor.HardbackCursor(hb):
-        if NEW_CHAPTERS:
-            chapters.append(sections.chapter(hc))
-        else:
-            chapters.extend([sections.metadata(hc), sections.qr(hc)])
+        hb.book.toc.extend((sections.metadata(hc), sections.qr(hc)))
 
-    hb.add_items(*chapters)
-    hb.book.toc[:] = chapters
+    hb.add_items(*hb.book.toc)
     hb.write()
 
 

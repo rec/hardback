@@ -23,7 +23,7 @@ def qr(hc):
 
 def metadata(hc):
     item = epub.EpubHtml(
-        title=f'Metadata {hc.index + 1}',
+        title=hc.source,
         file_name=f'metadata_chapter_{hc.index}.xhtml',
         content=metadata_html(hc))
     item.add_item(hc.hardback.book.default_css)
