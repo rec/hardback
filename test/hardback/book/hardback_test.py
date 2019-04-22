@@ -1,27 +1,32 @@
 from ebooklib import epub
 from hardback.book import css, hardback
 from hardback.data.book import Book
-from hardback.data.dataclass import Chapter
+from hardback.data.dataclass import Chapter, Hardback
+from pathlib import Path
 from pyfakefs.fake_filesystem_unittest import TestCase as FakeTestCase
+
+DIR = Path(__file__).parent
 
 
 class HardbackrTest(FakeTestCase):
     def setUp(self):
         self.setUpPyfakefs()
         self.fs.add_real_directory(css.CSS_DIR)
+        self.fs.add_real_directory(DIR)
 
     def test_simple(self):
-        desc = Book(
-            identifier='Identifier',
-            title='Title',
-            authors=('Tom Ritchford',))
+        desc = Hardback(
+            book=Book(
+                identifier='Identifier',
+                title='Title',
+                authors=('Tom Ritchford',)),
+            sources=[DIR / 'data1.txt', DIR / 'data2.txt'])
 
-        book = hardback.EpubBook()
-        book.add_desc(desc)
+        hb = hardback.Hardback(desc)
 
-        book.toc[:] = [epub.EpubHtml(**c.__dict__) for c in CHAPTERS]
-        book.add_items(*book.toc)
-        book.write('test.epub')
+        hb.book.toc[:] = [epub.EpubHtml(**c.__dict__) for c in CHAPTERS]
+        hb.book.add_items(*hb.book.toc)
+        hb.book.write('test.epub')
 
 
 INTRODUCTION = """
