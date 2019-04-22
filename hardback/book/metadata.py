@@ -32,14 +32,18 @@ def format(sha256, **metadata):
 
 
 FORMAT = """\
-block: {{count: {block[count]},  size: {block[size]}}}
-chunk: {{count: {chunk[count]},  size: {chunk[size]}}}
-dimensions: {dimensions}
-file_bytes: {file_bytes}
+<pre>
+
+
 file_name: {file_name}
+file_bytes: {file_bytes}
 timestamp: '{timestamp}'
 sha256: "\\
   {s1}\\
   {s2}\\
 "
+block: {{count: {block[count]},  size: {block[size]}}}
+chunk: {{count: {chunk[count]},  size: {chunk[size]}}}
+dimensions: {dimensions}
+</pre>
 """

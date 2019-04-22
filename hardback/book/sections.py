@@ -52,9 +52,4 @@ def qr_html(hc):
 
 
 def metadata_html(hc):
-    return _METADATA_PAGE % metadata_format(index=hc.index, **hc.metadata)
-
-
-_METADATA_PAGE = """<h2>Metadata</h2>
-<pre>%s
-</pre>"""
+    return metadata_format(index=hc.index, **hc.metadata)
