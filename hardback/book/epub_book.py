@@ -1,7 +1,6 @@
 from pathlib import Path
 from ebooklib import epub
-
-CSS_DIR = Path(__file__).parents[2] / 'css'
+from . css import make_css
 
 
 class EpubBook(epub.EpubBook):
@@ -29,11 +28,3 @@ class EpubBook(epub.EpubBook):
         self.add_items(epub.EpubNcx(), epub.EpubNav(), make_css('nav'))
         self.spine = ['nav'] + self.toc
         epub.write_epub(outfile, self, options)
-
-
-def make_css(name):
-    return epub.EpubItem(
-        uid=f'style_{name}',
-        file_name=f'style/{name}.css',
-        media_type='text/css',
-        content=open(CSS_DIR / f'{name}.css').read())

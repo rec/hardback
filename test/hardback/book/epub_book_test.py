@@ -1,5 +1,5 @@
 from ebooklib import epub
-from hardback.book import epub_book
+from hardback.book import css, epub_book
 from hardback.data import dataclass
 from pyfakefs.fake_filesystem_unittest import TestCase as FakeTestCase
 
@@ -7,7 +7,7 @@ from pyfakefs.fake_filesystem_unittest import TestCase as FakeTestCase
 class CreateEpubTest(FakeTestCase):
     def setUp(self):
         self.setUpPyfakefs()
-        self.fs.add_real_directory(epub_book.CSS_DIR)
+        self.fs.add_real_directory(css.CSS_DIR)
 
     def test_simple(self):
         desc = dataclass.Book(
