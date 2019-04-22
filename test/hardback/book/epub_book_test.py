@@ -1,6 +1,7 @@
 from ebooklib import epub
 from hardback.book import css, epub_book
-from hardback.data import dataclass
+from hardback.data.book import Book
+from hardback.data.dataclass import Chapter
 from pyfakefs.fake_filesystem_unittest import TestCase as FakeTestCase
 
 
@@ -10,7 +11,7 @@ class CreateEpubTest(FakeTestCase):
         self.fs.add_real_directory(css.CSS_DIR)
 
     def test_simple(self):
-        desc = dataclass.Book(
+        desc = Book(
             identifier='Identifier',
             title='Title',
             authors=('Tom Ritchford',))
@@ -41,6 +42,6 @@ rendition:layout-pre-paginated\
  rendition:spread-none'
 
 CHAPTERS = (
-    dataclass.Chapter('Introduction', 'introduction.xhtml', INTRODUCTION),
-    dataclass.Chapter('About this book', 'about.xhtml', ABOUT_THIS_BOOK),
+    Chapter('Introduction', 'introduction.xhtml', INTRODUCTION),
+    Chapter('About this book', 'about.xhtml', ABOUT_THIS_BOOK),
 )
