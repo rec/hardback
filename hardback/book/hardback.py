@@ -1,5 +1,4 @@
 from . import epub_book, metadata
-from .. data.fill import fill_book
 from .. qr.fill import fill_qr
 from .. util import hasher
 from .. util.elapsed_bar import ElapsedBar
@@ -11,7 +10,7 @@ class Hardback:
         if not desc.sources:
             raise ValueError('No filename')
         # Must be done first
-        fill_book(desc.book, desc.sources)
+        desc.book.fill(desc.sources)
         fill_qr(desc.qr)
 
         head = Path(desc.sources[0])
