@@ -25,7 +25,8 @@ def main(files):
         else:
             chapters.extend([sections.metadata(hc), sections.qr(hc)])
 
-    hb.book.add_chapters(chapters)
+    hb.book.add_items(*chapters)
+    hb.book.toc[:] = chapters
     hb.write()
 
 

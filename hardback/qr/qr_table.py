@@ -10,10 +10,8 @@ def table(entries, columns, rows):
             yield '  <tr>'
             for x in range(columns):
                 entry = entries[x + y * columns]
-                if not entry:
-                    break
                 style = '' if y else f' style="width:{width}%;"'
-                yield f'    <td{style}> {entry} </td>'
+                yield f'    <td{style}>{entry}</td>'
             yield '  </tr>'
             if not entry:
                 break
@@ -21,9 +19,9 @@ def table(entries, columns, rows):
         yield '</table>'
 
     it = [iter(entries)] * (columns * rows)
-    for group in itertools.zip_longest(*it):
+    for group in itertools.zip_longest(*it, fillvalue=''):
         yield '\n'.join(one_table(group))
 
 
 def qr_table(files, columns, rows):
-    return table((f'<img src="{f}"/>' for f in files), columns, rows)
+    return table((f' <img src="{f}"/> ' for f in files), columns, rows)

@@ -32,6 +32,7 @@ SMALL_RESULT = """\
   </tr>
   <tr>
     <td> <img src="x/4.png"/> </td>
+    <td></td>
   </tr>
 </table>\
 """

@@ -18,8 +18,8 @@ class CreateEpubTest(FakeTestCase):
         book = epub_book.EpubBook()
         book.add_desc(desc)
 
-        chapters = [epub.EpubHtml(**c.__dict__) for c in CHAPTERS]
-        book.add_chapters(chapters)
+        book.toc[:] = [epub.EpubHtml(**c.__dict__) for c in CHAPTERS]
+        book.add_items(*book.toc)
         book.write('test.epub')
 
 

@@ -21,17 +21,13 @@ class EpubBook(epub.EpubBook):
         self.default_css = make_css('default')
         self.add_item(self.default_css)
 
-    def add_chapters(self, chapters):
-        self.add_items(*chapters)
-        self.toc = chapters
-        self.add_items(epub.EpubNcx(), epub.EpubNav(), make_css('nav'))
-        self.spine = ['nav'] + chapters
-
     def add_items(self, *items):
         for i in items:
             self.add_item(i)
 
     def write(self, outfile, **options):
+        self.add_items(epub.EpubNcx(), epub.EpubNav(), make_css('nav'))
+        self.spine = ['nav'] + self.toc
         epub.write_epub(outfile, self, options)
 
 
