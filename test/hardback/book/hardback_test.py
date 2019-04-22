@@ -16,6 +16,7 @@ class HardbackrTest(FakeTestCase):
 
     def test_simple(self):
         desc = Hardback(
+            outfile='test.epub',
             book=Book(
                 identifier='Identifier',
                 title='Title',
@@ -25,8 +26,8 @@ class HardbackrTest(FakeTestCase):
         hb = hardback.Hardback(desc)
 
         hb.book.toc[:] = [epub.EpubHtml(**c.__dict__) for c in CHAPTERS]
-        hb.book.add_items(*hb.book.toc)
-        hb.book.write('test.epub')
+        hb.add_items(*hb.book.toc)
+        hb.write()
 
 
 INTRODUCTION = """
