@@ -5,10 +5,10 @@ def unserialize(data, output):
     """Unserialize from JSON-like data (dicts, strings, etc) to a dataclass"""
     try:
         fields = attr.fields_dict(output.__class__)
-    except:
+    except Exception:
         try:
             return type(output)(data)
-        except:
+        except Exception:
             return data
 
     unknown = set(data) - set(fields)

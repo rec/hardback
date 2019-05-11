@@ -1,7 +1,8 @@
-import copy, unittest
 from hardback.qr import fill
-from hardback.qr.qr import QR
 from hardback.qr.constants import Default
+from hardback.qr.qr import QR
+import copy
+import unittest
 
 DEFAULT = QR(Default.version, Default.error, Default.block_size)
 

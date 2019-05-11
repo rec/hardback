@@ -1,6 +1,7 @@
-import yaml, pathlib
 from .book import cursor, hardback, sections
 from .data import serialize, dataclass
+import pathlib
+import yaml
 
 _DATA_SUFFIXES = '.json', '.yml'
 NEW_CHAPTERS = False

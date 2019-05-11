@@ -1,5 +1,8 @@
-import os, setuptools, shutil, sys
 from setuptools.command.test import test as TestCommand
+import os
+import setuptools
+import shutil
+import sys
 
 
 # From here: http://pytest.org/2.2.4/goodpractises.html

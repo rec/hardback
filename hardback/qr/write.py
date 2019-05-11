@@ -1,4 +1,5 @@
-import segno, struct
+import segno
+import struct
 
 
 def write(qr, out, index, document, block):

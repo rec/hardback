@@ -1,5 +1,6 @@
 def writeqr_qrcode(count, version, filename):
-    import qrcode, qrcode.image.svg
+    import qrcode
+    import qrcode.image.svg
 
     data = bytes(i % 256 for i in range(count))
     qr = qrcode.QRCode(

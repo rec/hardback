@@ -1,6 +1,9 @@
-import itertools, math, os, yaml
-from ..util import files
 from ..qr.write import write
+from ..util import files
+import itertools
+import math
+import os
+import yaml
 
 
 def write_chunks(hc):
