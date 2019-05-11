@@ -7,7 +7,7 @@ from test.hardback import skip_tests
 BASE = Path(__file__).parent
 COVER_IMAGE = BASE / 'laser.png'
 COVER_RESULT = BASE / 'cover_result.png'
-COVER = Cover(title='Test', image=COVER_IMAGE, font=Font(size=100))
+COVER = Cover(title='Test', image=str(COVER_IMAGE), font=Font(size=100))
 
 
 class CoverTest(unittest.TestCase):
