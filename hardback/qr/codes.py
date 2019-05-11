@@ -1,5 +1,5 @@
 from attr import dataclass, Factory
-from . raw_codes import RAW_CODES
+from .raw_codes import RAW_CODES
 
 
 @dataclass(slots=True)

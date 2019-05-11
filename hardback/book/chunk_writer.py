@@ -1,6 +1,6 @@
 import itertools, math, os, yaml
-from .. util import files
-from .. qr.write import write
+from ..util import files
+from ..qr.write import write
 
 
 def write_chunks(hc):
@@ -9,7 +9,8 @@ def write_chunks(hc):
     os.makedirs(desc.qr_image_dir, exist_ok=True)
     suffix = desc.qr.SUFFIX
     file_format = os.path.join(
-        desc.qr_image_dir, f'{hc.index}-%0{digits}x{suffix}')
+        desc.qr_image_dir, f'{hc.index}-%0{digits}x{suffix}'
+    )
 
     document = bytes.fromhex(hc.metadata['sha256'])
     metadata_block = yaml.dump(hc.metadata).encode()

@@ -1,7 +1,7 @@
-from . chunk_writer import write_chunks
-from . metadata import format as metadata_format
-from .. qr import qr_table
-from .. util import chunk_sequence
+from .chunk_writer import write_chunks
+from .metadata import format as metadata_format
+from ..qr import qr_table
+from ..util import chunk_sequence
 from ebooklib import epub
 from pathlib import Path
 
@@ -11,21 +11,24 @@ def chapter(hc):
     return epub.EpubHtml(
         title=f'Metadata {name}',
         file_name=f'full_chapter_{hc.index}.xhtml',
-        content=metadata_html(hc) + qr_html(hc))
+        content=metadata_html(hc) + qr_html(hc),
+    )
 
 
 def qr(hc):
     return epub.EpubHtml(
         title=hc.source,
         file_name=f'qr-codes-{hc.index}.xhtml',
-        content=qr_html(hc))
+        content=qr_html(hc),
+    )
 
 
 def metadata(hc):
     item = epub.EpubHtml(
         title=hc.source,
         file_name=f'metadata_chapter_{hc.index}.xhtml',
-        content=metadata_html(hc))
+        content=metadata_html(hc),
+    )
     item.add_item(hc.hardback.book.default_css)
     return item
 

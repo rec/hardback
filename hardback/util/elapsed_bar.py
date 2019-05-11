@@ -23,6 +23,9 @@ class ElapsedBar(ChargingBar):
             return str(t).split('.', 1)[0]
 
         self.message = '%s %s elapsed, %s to go' % (
-            message, fmt(elapsed), fmt(remaining))
+            message,
+            fmt(elapsed),
+            fmt(remaining),
+        )
 
         self.next()

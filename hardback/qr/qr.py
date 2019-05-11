@@ -22,8 +22,10 @@ class QR:
 
     def check_chunk_size(self):
         if self.chunk_size > self.max_chunk_size:
-            raise ValueError('Not enough space for chunk: %d > %d' %
-                             (self.chunk_size, self.max_chunk_size))
+            raise ValueError(
+                'Not enough space for chunk: %d > %d'
+                % (self.chunk_size, self.max_chunk_size)
+            )
 
     @error.validator
     def check_error(self, _, error):

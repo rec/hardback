@@ -5,13 +5,15 @@ def writeqr_qrcode(count, version, filename):
     qr = qrcode.QRCode(
         version=version,
         error_correction=qrcode.constants.ERROR_CORRECT_H,
-        image_factory=qrcode.image.svg.SvgPathImage)
+        image_factory=qrcode.image.svg.SvgPathImage,
+    )
     qr.add_data(data)
     qr.make_image().save(filename)
 
 
 def writeqr_segno(count, version, filename):
     import segno
+
     data = bytes(i % 256 for i in range(count))
     qr = segno.make_qr(data, version=version, error='H')
     qr.save(filename)

@@ -23,7 +23,6 @@ if __name__ == '__main__':
         COVER.render().save(COVER_RESULT)
     else:
         cover = Cover(
-            title='Test',
-            image=BASE / 'psych.png',
-            font=Font(size=100))
+            title='Test', image=BASE / 'psych.png', font=Font(size=100)
+        )
         cover.render().save('bad_image.png')

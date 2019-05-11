@@ -1,6 +1,6 @@
 import yaml, pathlib
-from . book import cursor, hardback, sections
-from . data import serialize, dataclass
+from .book import cursor, hardback, sections
+from .data import serialize, dataclass
 
 _DATA_SUFFIXES = '.json', '.yml'
 NEW_CHAPTERS = False
@@ -27,4 +27,5 @@ def main(files):
 
 if __name__ == '__main__':
     import sys
+
     main(sys.argv[1:])

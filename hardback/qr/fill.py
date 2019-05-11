@@ -1,4 +1,4 @@
-from . constants import ERRORS, MAX_VERSION, Default
+from .constants import ERRORS, MAX_VERSION, Default
 
 
 def fill_qr(qr):
@@ -6,8 +6,10 @@ def fill_qr(qr):
         for qr.error in reversed(ERRORS):
             if qr.chunk_size <= qr.max_chunk_size:
                 return
-        raise ValueError('Not enough space for chunk: %d < %d' %
-                         (qr.chunk_size, qr.max_chunk_size))
+        raise ValueError(
+            'Not enough space for chunk: %d < %d'
+            % (qr.chunk_size, qr.max_chunk_size)
+        )
 
     def fill_version():
         err = qr.error

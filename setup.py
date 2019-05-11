@@ -14,6 +14,7 @@ class TestCommand(TestCommand):
     def run_tests(self):
         # Import here, because outside the eggs aren't loaded.
         import pytest
+
         errno = pytest.main(self.test_args)
         if errno:
             raise SystemExit(errno)
@@ -22,6 +23,7 @@ class TestCommand(TestCommand):
 class CoverageCommand(TestCommand):
     def run_tests(self):
         import coverage
+
         cov = coverage.Coverage(config_file=True)
 
         cov.start()
@@ -32,8 +34,10 @@ class CoverageCommand(TestCommand):
         coverage = cov.html_report(directory='htmlcov')
         fail_under = cov.get_option('report:fail_under')
         if coverage < fail_under:
-            print('ERROR: coverage %.2f%% was less than fail_under=%s%%' % (
-                  coverage, fail_under))
+            print(
+                'ERROR: coverage %.2f%% was less than fail_under=%s%%'
+                % (coverage, fail_under)
+            )
             raise SystemExit(1)
 
 
@@ -90,33 +94,27 @@ URL = f'http://github.com/{OWNER}/{NAME}'
 setuptools.setup(
     name=NAME,
     version=VERSION,
-
     description='Hardcopy backups of digital data',
     long_description=open('README.rst').read(),
-
     author='Tom Ritchford',
     author_email='tom@swirly.com',
-
     url=URL,
     download_url=f'{URL}/archive/{VERSION}.tar.gz',
     license='MIT',
-
     packages=setuptools.find_packages(exclude=['test']),
     install_requires=open('requirements.txt').read().splitlines(),
     tests_require=open('test_requirements.txt').read().splitlines(),
     include_package_data=True,
-
     cmdclass={
         'application': ApplicationCommand,
         'clean': CleanCommand,
         'coverage': CoverageCommand,
         'test': TestCommand,
     },
-
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
-    ]
+    ],
 )

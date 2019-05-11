@@ -2,6 +2,7 @@ import copy, unittest
 from hardback.qr import fill
 from hardback.qr.qr import QR
 from hardback.qr.constants import Default
+
 DEFAULT = QR(Default.version, Default.error, Default.block_size)
 
 
@@ -61,7 +62,8 @@ class FillTest(unittest.TestCase):
             for block_size in range(begin, end):
                 actual = fill_from(block_size=block_size)
                 expected = QR(
-                    version=version, error=error, block_size=block_size)
+                    version=version, error=error, block_size=block_size
+                )
                 self.assertEqual(expected, actual)
 
     def test_raises(self):

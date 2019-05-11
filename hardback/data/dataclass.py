@@ -1,9 +1,9 @@
 """Contains data classes that specify how a book is put together"""
 
-from .. qr.qr import QR
+from ..qr.qr import QR
 from attr import dataclass, Factory
 from typing import List
-from . book import Book
+from .book import Book
 
 
 @dataclass

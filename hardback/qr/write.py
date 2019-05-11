@@ -2,8 +2,8 @@ import segno, struct
 
 
 def write(qr, out, index, document, block):
-    document = document[:qr.document_bytes]
-    index = struct.pack(f'>q', index)[:qr.index_bytes]
+    document = document[: qr.document_bytes]
+    index = struct.pack(f'>q', index)[: qr.index_bytes]
     data = index + document + block
 
     def write(fp):

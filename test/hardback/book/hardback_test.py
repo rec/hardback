@@ -20,8 +20,10 @@ class HardbackrTest(FakeTestCase):
             book=Book(
                 identifier='Identifier',
                 title='Title',
-                authors=('Tom Ritchford',)),
-            sources=[DIR / 'data1.txt', DIR / 'data2.txt'])
+                authors=('Tom Ritchford',),
+            ),
+            sources=[DIR / 'data1.txt', DIR / 'data2.txt'],
+        )
 
         hb = hardback.Hardback(desc)
 
