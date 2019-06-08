@@ -102,7 +102,7 @@ setuptools.setup(
     author='Tom Ritchford',
     author_email='tom@swirly.com',
     url=URL,
-    download_url=f'{URL}/archive/{VERSION}.tar.gz',
+    download_url='%s/archive/%s.tar.gz' % (URL, VERSION),
     license='MIT',
     packages=setuptools.find_packages(exclude=['test']),
     install_requires=open('requirements.txt').read().splitlines(),
