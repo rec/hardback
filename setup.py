@@ -92,7 +92,7 @@ NAME = 'hardback'
 OWNER = 'timedata-org'
 VERSION_FILE = os.path.join(os.path.dirname(__file__), NAME, 'VERSION')
 VERSION = open(VERSION_FILE).read().strip()
-URL = f'http://github.com/{OWNER}/{NAME}'
+URL = 'http://github.com/%s/%s' % (OWNER, NAME)
 
 setuptools.setup(
     name=NAME,
