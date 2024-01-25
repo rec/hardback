@@ -33,6 +33,9 @@ source = "timedata"
 [tool.coverage.report]
 fail_under = "58"
 skip_covered = "True"
+
+[tool.mypy]
+strict = true
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
