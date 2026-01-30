@@ -3,7 +3,7 @@ name = "hardback"
 version = "0.9.2"
 description = "📓 Hardcopy backups of digital data 📓"
 authors = [{ name = "Tom Ritchford", email = "tom@swirly.com" }]
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 readme = "README.md"
 license = "MIT"
 classifiers = [
