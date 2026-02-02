@@ -13,7 +13,7 @@ def unserialize(data, output):
 
     unknown = set(data) - set(fields)
     if unknown:
-        raise ValueError('Do not understand fields:', *unknown)
+        raise ValueError("Do not understand fields:", *unknown)
 
     for k, v in data.items():
         subitem = getattr(output, k)

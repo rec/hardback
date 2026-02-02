@@ -23,27 +23,27 @@ class FillTest(unittest.TestCase):
         self.assertEqual(filler(DEFAULT), DEFAULT)
 
     def test_all_filled(self):
-        qr = QR(version=30, error='M', block_size=200)
+        qr = QR(version=30, error="M", block_size=200)
         self.assertEqual(qr, filler(qr))
 
     def test_fill_block_size1(self):
-        qr = QR(version=25, error='M')
-        expected = QR(version=25, error='M', block_size=981)
+        qr = QR(version=25, error="M")
+        expected = QR(version=25, error="M", block_size=981)
         self.assertEqual(expected, filler(qr))
 
     def test_fill_block_size2(self):
         qr = QR(version=25)
-        expected = QR(version=25, error='H', block_size=519)
+        expected = QR(version=25, error="H", block_size=519)
         self.assertEqual(expected, filler(qr))
 
     def test_fill_error1(self):
         qr = QR(version=25, block_size=981)
-        expected = QR(version=25, error='M', block_size=981)
+        expected = QR(version=25, error="M", block_size=981)
         self.assertEqual(expected, filler(qr))
 
     def test_fill_version1(self):
-        qr = QR(block_size=981, error='M')
-        expected = QR(version=25, error='M', block_size=981)
+        qr = QR(block_size=981, error="M")
+        expected = QR(version=25, error="M", block_size=981)
         self.assertEqual(expected, filler(qr))
 
     def test_XXX(self):
@@ -52,19 +52,17 @@ class FillTest(unittest.TestCase):
     def test_fill_error2(self):
         # Edge cases occur for versions "near 40"
         ranges = (
-            (2316, 2938, 40, 'L'),
-            (1648, 2316, 40, 'M'),
-            (1258, 1648, 40, 'Q'),
-            (1204, 1258, 40, 'H'),
-            (1258, 1124, 39, 'L'),
+            (2316, 2938, 40, "L"),
+            (1648, 2316, 40, "M"),
+            (1258, 1648, 40, "Q"),
+            (1204, 1258, 40, "H"),
+            (1258, 1124, 39, "L"),
         )
 
         for begin, end, version, error in ranges:
             for block_size in range(begin, end):
                 actual = fill_from(block_size=block_size)
-                expected = QR(
-                    version=version, error=error, block_size=block_size
-                )
+                expected = QR(version=version, error=error, block_size=block_size)
                 self.assertEqual(expected, actual)
 
     def test_raises(self):

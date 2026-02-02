@@ -16,13 +16,13 @@ class HardbackrTest(FakeTestCase):
 
     def test_simple(self):
         desc = Hardback(
-            outfile='test.epub',
+            outfile="test.epub",
             book=Book(
-                identifier='Identifier',
-                title='Title',
-                authors=('Tom Ritchford',),
+                identifier="Identifier",
+                title="Title",
+                authors=("Tom Ritchford",),
             ),
-            sources=[DIR / 'data1.txt', DIR / 'data2.txt'],
+            sources=[DIR / "data1.txt", DIR / "data2.txt"],
         )
 
         hb = hardback.Hardback(desc)
@@ -44,12 +44,12 @@ ABOUT_THIS_BOOK = """
 <p>Hello, this is my book.</p>
 """
 
-PROPERTIES = '\
+PROPERTIES = "\
 rendition:layout-pre-paginated\
  rendition:orientation-landscape\
- rendition:spread-none'
+ rendition:spread-none"
 
 CHAPTERS = (
-    Chapter('Introduction', 'introduction.xhtml', INTRODUCTION),
-    Chapter('About this book', 'about.xhtml', ABOUT_THIS_BOOK),
+    Chapter("Introduction", "introduction.xhtml", INTRODUCTION),
+    Chapter("About this book", "about.xhtml", ABOUT_THIS_BOOK),
 )

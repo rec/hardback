@@ -4,40 +4,40 @@ from typing import List
 from PIL import Image, ImageDraw, ImageFont
 
 # TODO: this only works for MacOS
-DEFAULT_FONT = '/Library/Fonts/Arial.ttf'
+DEFAULT_FONT = "/Library/Fonts/Arial.ttf"
 
 
 @dataclass
 class Font:
-    name: str = ''
+    name: str = ""
     size: int = 0
 
     def create(self):
         name = self.name or DEFAULT_FONT
         suffix = Path(name).suffix
-        if suffix == '.ttf':
+        if suffix == ".ttf":
             if not self.size:
-                raise ValueError(f'Size must be set for Truetype fonts')
+                raise ValueError(f"Size must be set for Truetype fonts")
             return ImageFont.truetype(name, self.size)
 
-        if suffix == '.pil':
+        if suffix == ".pil":
             if self.size:
-                raise ValueError(f'Size cannot be set for Bitmap fonts')
+                raise ValueError(f"Size cannot be set for Bitmap fonts")
             return ImageFont.load(name)
 
-        raise ValueError(f'Do not understand font {name}')
+        raise ValueError(f"Do not understand font {name}")
 
 
 @dataclass
 class Cover:
-    title: str = ''
-    image: str = ''
+    title: str = ""
+    image: str = ""
     font: Font = Factory(Font)
     margin: List[int] = Factory(lambda: [75, 50])
     size: List[int] = Factory(lambda: [1600, 2560])
 
     def render(self):
-        image = Image.new('RGB', self.size, 'white')
+        image = Image.new("RGB", self.size, "white")
         draw = ImageDraw.Draw(image)
         items = []
 
@@ -47,7 +47,7 @@ class Cover:
             x = (self.size[0] - width) // 2
 
             def run(y):
-                draw.text((x, y), text=self.title, font=font, fill='black')
+                draw.text((x, y), text=self.title, font=font, fill="black")
 
             items.append((run, height))
 

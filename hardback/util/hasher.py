@@ -16,7 +16,7 @@ def hash_file(filename, block_size=files.BLOCK_SIZE, hasher=HASHER):
     return hash_digest(blocks, hasher)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
 
     for arg in sys.argv[1:]:

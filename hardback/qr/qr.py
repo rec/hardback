@@ -5,12 +5,12 @@ from . import codes, constants
 @attr.s(slots=True)
 class QR:
     version = attr.ib(default=0)
-    error = attr.ib(default='')
+    error = attr.ib(default="")
     block_size = attr.ib(default=0)
     document_bytes = attr.ib(default=8)
     index_bytes = attr.ib(default=8)
 
-    SUFFIX = '.png'
+    SUFFIX = ".png"
 
     @property
     def max_chunk_size(self):
@@ -23,7 +23,7 @@ class QR:
     def check_chunk_size(self):
         if self.chunk_size > self.max_chunk_size:
             raise ValueError(
-                'Not enough space for chunk: %d > %d'
+                "Not enough space for chunk: %d > %d"
                 % (self.chunk_size, self.max_chunk_size)
             )
 

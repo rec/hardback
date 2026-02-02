@@ -3,7 +3,7 @@ from .data import serialize, dataclass
 import pathlib
 import yaml
 
-_DATA_SUFFIXES = '.json', '.yml'
+_DATA_SUFFIXES = ".json", ".yml"
 NEW_CHAPTERS = False
 
 
@@ -26,7 +26,7 @@ def main(files):
     hb.write()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import sys
 
     main(sys.argv[1:])

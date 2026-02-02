@@ -5,10 +5,10 @@ from typing import List
 
 @dataclass(slots=True)
 class Book:
-    identifier: str = ''
-    title: str = ''
-    cover: str = ''
-    language: str = 'en'
+    identifier: str = ""
+    title: str = ""
+    cover: str = ""
+    language: str = "en"
     authors: List[str] = Factory(list)
 
     def apply(self, ebook):
@@ -20,8 +20,8 @@ class Book:
             ebook.add_author(a)
 
         if self.cover:
-            with open(self.cover, 'rb') as fp:
-                filename = 'cover_' + Path(self.cover).name
+            with open(self.cover, "rb") as fp:
+                filename = "cover_" + Path(self.cover).name
                 ebook.set_cover(filename, fp.read())
 
     def fill(self, sources):
@@ -33,7 +33,7 @@ class Book:
         if not self.title:
             self.title = head.name
             if len(sources) > 1:
-                self.title += ', ...'
+                self.title += ", ..."
 
 
-SUFFIXES = '.jpeg', '.jpg', '.png'
+SUFFIXES = ".jpeg", ".jpg", ".png"

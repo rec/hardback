@@ -7,8 +7,7 @@ def fill_qr(qr):
             if qr.chunk_size <= qr.max_chunk_size:
                 return
         raise ValueError(
-            'Not enough space for chunk: %d < %d'
-            % (qr.chunk_size, qr.max_chunk_size)
+            "Not enough space for chunk: %d < %d" % (qr.chunk_size, qr.max_chunk_size)
         )
 
     def fill_version():

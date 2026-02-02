@@ -3,15 +3,15 @@ from hardback.qr.qr_table import qr_table
 
 
 def join_qr(file_count, columns, rows):
-    files = ('x/%d.png' % i for i in range(file_count))
-    return '\n'.join(qr_table(files, columns, rows))
+    files = ("x/%d.png" % i for i in range(file_count))
+    return "\n".join(qr_table(files, columns, rows))
 
 
 class QrTableTest(unittest.TestCase):
     maxDiff = 10000
 
     def test_simple(self):
-        self.assertEqual(join_qr(0, 1, 1), '')
+        self.assertEqual(join_qr(0, 1, 1), "")
 
     def test_small(self):
         self.assertEqual(SMALL_RESULT, join_qr(5, 2, 3))

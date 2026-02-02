@@ -3,7 +3,7 @@ from progress.bar import ChargingBar
 
 
 class ElapsedBar(ChargingBar):
-    def __init__(self, msg='Working', *args, enable=True, **kwds):
+    def __init__(self, msg="Working", *args, enable=True, **kwds):
         super().__init__(msg, *args, **kwds)
         self.__start_time = datetime.datetime.now()
         self.__index = 0
@@ -20,9 +20,9 @@ class ElapsedBar(ChargingBar):
         remaining = time_per_item * remaining_items
 
         def fmt(t):
-            return str(t).split('.', 1)[0]
+            return str(t).split(".", 1)[0]
 
-        self.message = '%s %s elapsed, %s to go' % (
+        self.message = "%s %s elapsed, %s to go" % (
             message,
             fmt(elapsed),
             fmt(remaining),
