@@ -1,8 +1,10 @@
 """Contains data classes that specify how a book is put together"""
 
-from ..qr.qr import QR
-from attr import dataclass, Factory
 from typing import List
+
+from attr import Factory, dataclass
+
+from ..qr.qr import QR
 from .book import Book
 
 
@@ -15,9 +17,9 @@ class Chapter:
 
 @dataclass(slots=True)
 class Hardback:
-    sources: List[str] = Factory(list)
+    sources: list[str] = Factory(list)
     book: Book = Factory(Book)
-    dimensions: List[int] = Factory(lambda: [5, 7])
+    dimensions: list[int] = Factory(lambda: [5, 7])
     outfile: str = ""
     qr: QR = Factory(QR)
 

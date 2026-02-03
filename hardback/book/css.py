@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from ebooklib import epub
 
 CSS_DIR = Path(__file__).parents[2] / "css"

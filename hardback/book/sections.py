@@ -1,9 +1,11 @@
-from .chunk_writer import write_chunks
-from .metadata import format as metadata_format
+from pathlib import Path
+
+from ebooklib import epub
+
 from ..qr import qr_table
 from ..util import chunk_sequence
-from ebooklib import epub
-from pathlib import Path
+from .chunk_writer import write_chunks
+from .metadata import format as metadata_format
 
 
 def chapter(hc):
@@ -36,7 +38,7 @@ def metadata(hc):
 def qr_html(hc):
     def qr_code_images():
         chunks = write_chunks(hc)
-        for block_count, f in enumerate(chunks):
+        for f in chunks:
             f = Path(f)
             add_image_item(f)
             hc.hardback.desc.remove_image_files and f.unlink()

@@ -1,7 +1,9 @@
 import unittest
-from hardback.data.cover import Cover, Font
 from pathlib import Path
+
 from PIL import Image
+
+from hardback.data.cover import Cover, Font
 from test.hardback import skip_tests
 
 BASE = Path(__file__).parent

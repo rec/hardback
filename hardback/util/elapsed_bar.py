@@ -1,4 +1,5 @@
 import datetime
+
 from progress.bar import ChargingBar
 
 
@@ -22,7 +23,7 @@ class ElapsedBar(ChargingBar):
         def fmt(t):
             return str(t).split(".", 1)[0]
 
-        self.message = "%s %s elapsed, %s to go" % (
+        self.message = "{} {} elapsed, {} to go".format(
             message,
             fmt(elapsed),
             fmt(remaining),

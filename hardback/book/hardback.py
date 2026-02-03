@@ -1,10 +1,12 @@
-from .css import make_css
-from . import metadata
+from pathlib import Path
+
+from ebooklib import epub
+
 from ..qr.fill import fill_qr
 from ..util import hasher
 from ..util.elapsed_bar import ElapsedBar
-from ebooklib import epub
-from pathlib import Path
+from . import metadata
+from .css import make_css
 
 
 class Hardback:

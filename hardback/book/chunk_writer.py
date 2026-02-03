@@ -1,9 +1,11 @@
-from ..qr.write import write
-from ..util import files
 import itertools
 import math
 import os
+
 import yaml
+
+from ..qr.write import write
+from ..util import files
 
 
 def write_chunks(hc):

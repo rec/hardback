@@ -3,10 +3,11 @@ Return a dictionary representing the header block - a block in JSON
 representing metadata about the file.
 """
 
-from ..util import chunk_sequence, hasher
 import datetime
 import os
 import pathlib
+
+from ..util import chunk_sequence, hasher
 
 
 def metadata(desc, source):

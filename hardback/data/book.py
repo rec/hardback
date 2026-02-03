@@ -1,6 +1,7 @@
-from attr import dataclass, Factory
 from pathlib import Path
 from typing import List
+
+from attr import Factory, dataclass
 
 
 @dataclass(slots=True)
@@ -9,7 +10,7 @@ class Book:
     title: str = ""
     cover: str = ""
     language: str = "en"
-    authors: List[str] = Factory(list)
+    authors: list[str] = Factory(list)
 
     def apply(self, ebook):
         ebook.set_identifier(self.identifier)

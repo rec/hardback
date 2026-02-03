@@ -1,6 +1,7 @@
-from attr import dataclass, Factory
 from pathlib import Path
 from typing import List
+
+from attr import Factory, dataclass
 from PIL import Image, ImageDraw, ImageFont
 
 # TODO: this only works for MacOS
@@ -17,12 +18,12 @@ class Font:
         suffix = Path(name).suffix
         if suffix == ".ttf":
             if not self.size:
-                raise ValueError(f"Size must be set for Truetype fonts")
+                raise ValueError("Size must be set for Truetype fonts")
             return ImageFont.truetype(name, self.size)
 
         if suffix == ".pil":
             if self.size:
-                raise ValueError(f"Size cannot be set for Bitmap fonts")
+                raise ValueError("Size cannot be set for Bitmap fonts")
             return ImageFont.load(name)
 
         raise ValueError(f"Do not understand font {name}")
@@ -33,8 +34,8 @@ class Cover:
     title: str = ""
     image: str = ""
     font: Font = Factory(Font)
-    margin: List[int] = Factory(lambda: [75, 50])
-    size: List[int] = Factory(lambda: [1600, 2560])
+    margin: list[int] = Factory(lambda: [75, 50])
+    size: list[int] = Factory(lambda: [1600, 2560])
 
     def render(self):
         image = Image.new("RGB", self.size, "white")

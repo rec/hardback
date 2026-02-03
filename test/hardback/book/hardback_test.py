@@ -1,9 +1,11 @@
+from pathlib import Path
+
 from ebooklib import epub
+from pyfakefs.fake_filesystem_unittest import TestCase as FakeTestCase
+
 from hardback.book import css, hardback
 from hardback.data.book import Book
 from hardback.data.dataclass import Chapter, Hardback
-from pathlib import Path
-from pyfakefs.fake_filesystem_unittest import TestCase as FakeTestCase
 
 DIR = Path(__file__).parent
 

@@ -1,10 +1,11 @@
-import segno
 import struct
+
+import segno
 
 
 def write(qr, out, index, document, block):
     document = document[: qr.document_bytes]
-    index = struct.pack(f">q", index)[: qr.index_bytes]
+    index = struct.pack(">q", index)[: qr.index_bytes]
     data = index + document + block
 
     def write(fp):

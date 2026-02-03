@@ -1,4 +1,5 @@
-from attr import dataclass, Factory
+from attr import Factory, dataclass
+
 from .raw_codes import RAW_CODES
 
 

@@ -1,4 +1,5 @@
 import unittest
+
 from hardback.qr.qr_table import qr_table
 
 

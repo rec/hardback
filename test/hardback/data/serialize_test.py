@@ -1,7 +1,9 @@
 import unittest
-from attr import dataclass, Factory
-from hardback.data.serialize import serialize, unserialize
+
+from attr import Factory, dataclass
+
 from hardback.data.dataclass import Hardback
+from hardback.data.serialize import serialize, unserialize
 
 
 class SerializeTest(unittest.TestCase):

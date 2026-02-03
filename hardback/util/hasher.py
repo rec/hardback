@@ -1,4 +1,5 @@
 import hashlib
+
 from . import files
 
 HASHER = hashlib.sha256
